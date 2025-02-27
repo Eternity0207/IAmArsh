@@ -201,9 +201,9 @@
     color: var(--text-color-3);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 990px) {
     .the_menu .menu_item>a {
-        font-size: 4.8vw;
+        font-size: 3.5vw;
         text-align: center;
     }
 }
@@ -213,12 +213,9 @@
         text-align: center;
     }
 
-    .the_menu .menu_item {
-        font-size: 35px;
-        text-align: center;
-    }
-
     .the_menu .menu_item > a {
+        font-size: 45px;
+        text-align: center;
         display: inline-block;
     }
 }
