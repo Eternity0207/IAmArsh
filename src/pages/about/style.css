@@ -4,6 +4,7 @@
 
 .table td,
 .table th {
+    background: transparent;
     color: var(--text-color);
 }
 
