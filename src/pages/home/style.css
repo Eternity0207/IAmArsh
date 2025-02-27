@@ -170,10 +170,6 @@ section {
     color: var(--primary-color);
 }
 
-#button_h:hover {
-    color: var(--primary-color)
-}
-
 .intro_sec .h_bg-image .block {
     bottom: 50vh;
     max-width: 220px;
