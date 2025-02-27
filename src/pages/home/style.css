@@ -40,7 +40,7 @@ section {
 @media (max-width:991.98px) {
     .intro_sec {
         display: block;
-        height: auto!important;
+        height: auto !important;
     }
 }
 
@@ -50,6 +50,7 @@ section {
 }
 
 @media (max-width:991.98px) {
+
     .intro_sec .text,
     .intro_sec .h_bg-image {
         width: 100%;
@@ -70,7 +71,7 @@ section {
 }
 
 .intro_sec .intro .feature .wrap-icon {
-    background: 0 0!important;
+    background: 0 0 !important;
     width: auto;
     height: auto;
     margin-bottom: 0;
@@ -168,6 +169,20 @@ section {
 #button_p {
     background: var(--secondary-color);
     color: var(--primary-color);
+    font-weight: 400;
+    transition: font-weight 0.3s ease;
+}
+
+#button_p:hover {
+    font-weight: 600;
+}
+
+#button_h {
+    transition: all 1s ease-in-out;
+}
+
+#button_h:hover {
+    font-weight: 500;
 }
 
 .intro_sec .h_bg-image .block {
@@ -194,6 +209,7 @@ section {
         min-height: 75vh;
         margin-bottom: 30px;
     }
+
     .intro_sec .h_bg-image .block {
         top: unset;
         bottom: 0;
