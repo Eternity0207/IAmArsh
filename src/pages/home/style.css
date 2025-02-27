@@ -170,6 +170,7 @@ section {
     background: var(--secondary-color);
     color: var(--primary-color);
     font-weight: 400;
+    border: var(--primary-color) 2px solid;
     transition: all 1s ease-in-out;
 }
 
