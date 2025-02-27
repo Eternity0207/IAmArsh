@@ -7,8 +7,9 @@ import {
 import withRouter from "../hooks/withRouter";
 import AppRoutes from "./routes";
 import Headermain from "../header";
-import AnimatedCursor  from "../hooks/AnimatedCursor";
+import AnimatedCursor from "../hooks/AnimatedCursor";
 import "./App.css";
+import "../components/stars.scss"
 
 function _ScrollToTop(props) {
   const { pathname } = useLocation();
@@ -21,21 +22,26 @@ const ScrollToTop = withRouter(_ScrollToTop);
 
 export default function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
-      <div className="cursor__dot">
-        <AnimatedCursor
-          innerSize={15}
-          outerSize={15}
-          color="255, 255 ,255"
-          outerAlpha={0.4}
-          innerScale={0.7}
-          outerScale={5}
-        />
-      </div>
-      <ScrollToTop>
-        <Headermain />
-        <AppRoutes />
-      </ScrollToTop>
-    </Router>
+    <div id="home" className="intro route bg-image background">
+      <div id="stars" />
+      <div id="stars2" />
+      <div id="stars3" />
+      <Router basename={process.env.PUBLIC_URL}>
+        <div className="cursor__dot">
+          <AnimatedCursor
+            innerSize={15}
+            outerSize={15}
+            color="255, 255 ,255"
+            outerAlpha={0.4}
+            innerScale={0.7}
+            outerScale={5}
+          />
+        </div>
+        <ScrollToTop>
+          <Headermain />
+          <AppRoutes />
+        </ScrollToTop>
+      </Router>
+    </div>
   );
 }

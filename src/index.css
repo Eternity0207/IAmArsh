@@ -2,6 +2,8 @@
     --bg-color: #0c0c0c;
     --primary-color: hsl(0, 0%, 5%);
     --menu-color: rgb(0,0,0,0.7);
+    --star-bg-color: radial-gradient(ellipse at bottom, #28333f 0%, #090A0F 100%);
+    --star-color: rgb(255,255,255);
     --secondary-color: #fff;
     --text-color: #fff;
     --text-color-2: #fff;
@@ -13,6 +15,8 @@
     --bg-color: #ffffff;
     --primary-color: #ffffff;
     --menu-color: rgb(255,255,255,0.7);
+    --star-bg-color: radial-gradient(ellipse at bottom, #1e2124c1 0%, white 100%);
+    --star-color: rgb(0,0,0);
     --secondary-color: #000;
     --text-color: #000;
     --text-color-2: #000;
