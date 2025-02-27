@@ -8,6 +8,10 @@
     color: var(--text-color);
 }
 
+.table{
+    border-color: var(--secondary-color);
+}
+
 .t_border {
     border-color: var(--text-color) !important;
 }
