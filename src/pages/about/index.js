@@ -1,5 +1,6 @@
 import React from "react";
 import "./style.css";
+import "../../components/cube/style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Container, Row, Col } from "react-bootstrap";
 import {
@@ -9,6 +10,12 @@ import {
   skills,
   services,
 } from "../../content_option";
+import html from "../../assets/images/html.svg";
+import css from "../../assets/images/tailwind.svg";
+import js from "../../assets/images/js.svg";
+import node from "../../assets/images/nodejs.svg";
+import react from "../../assets/images/react.svg";
+import jqeury from "../../assets/images/jqeury.svg";
 
 export const About = () => {
   return (
@@ -95,6 +102,55 @@ export const About = () => {
           </Col>
         </Row>
       </Container>
+      <div class="cube">
+
+        <div class="outer-cube">
+          <div class="outer-top">
+            <img src={node} />
+          </div>
+          <div class="outer-bottom">
+            <img src={js} />
+          </div>
+          <div class="outer-front">
+            <img src={react} />
+          </div>
+          <div class="outer-back">
+            <img src={css} />
+          </div>
+          <div class="outer-left">
+            <img src={jqeury} />
+          </div>
+          <div class="outer-right">
+            <img src={html} />
+          </div>
+        </div>
+        <div class="inner-cube">
+          <div class="inner-top">
+            <img src={node} />
+          </div>
+          <div class="inner-bottom">
+            <img src={js} />
+          </div>
+          <div class="inner-front">
+            <img src={react} />
+          </div>
+          <div class="inner-back">
+            <img src={css} />
+          </div>
+          <div class="inner-left">
+            <img src={jqeury} />
+          </div>
+          <div class="inner-right">
+            <img src={html} />
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="message">
+          <div class="tip">
+          </div>
+        </div>
+      </div>
     </HelmetProvider>
   );
 };
