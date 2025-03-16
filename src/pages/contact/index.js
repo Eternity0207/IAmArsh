@@ -30,27 +30,29 @@ export const ContactUs = () => {
 
     emailjs
       .send(
-        contactConfig.YOUR_SERVICE_ID,
-        contactConfig.YOUR_TEMPLATE_ID,
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
         templateParams,
-        contactConfig.YOUR_USER_ID
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
       )
       .then(
         (result) => {
           console.log(result.text);
           setFormdata({
             loading: false,
-            alertmessage: "SUCCESS! ,Thankyou for your messege",
+            alertmessage: "Your message has been delivered to Arsh! Thank you for your message",
             variant: "success",
+            message: "",
             show: true,
           });
         },
         (error) => {
           console.log(error.text);
           setFormdata({
-            alertmessage: `Faild to send!,${error.text}`,
+            alertmessage: `Faild to send your message! Please try again later, ${error.text}`,
             variant: "danger",
             show: true,
+            message: "",
           });
           document.getElementsByClassName("co_alert")[0].scrollIntoView();
         }
@@ -83,9 +85,8 @@ export const ContactUs = () => {
             <Alert
               //show={formData.show}
               variant={formData.variant}
-              className={`rounded-0 co_alert ${
-                formData.show ? "d-block" : "d-none"
-              }`}
+              className={`rounded-0 co_alert ${formData.show ? "d-block" : "d-none"
+                }`}
               onClose={() => setFormdata({ show: false })}
               dismissible
             >

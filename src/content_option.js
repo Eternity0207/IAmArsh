@@ -74,9 +74,6 @@ const contactConfig = {
     YOUR_EMAIL: "iamarsh0207@gmail.com",
     YOUR_FONE: "",
     description: "<strong>Need some help? 🤔</strong> <br>We're here for you! Whether you have questions, need support, or just want to say hello, feel free to reach out. Fill out the form, drop us an email, or connect with us on social media—we’d love to hear from you!",
-    YOUR_SERVICE_ID: "service_id",
-    YOUR_TEMPLATE_ID: "template_id",
-    YOUR_USER_ID: "user_id",
 };
 
 const socialprofils = {

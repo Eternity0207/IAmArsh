@@ -5,7 +5,6 @@
     "dependencies": {
         "bootstrap": "^5.2.3",
         "emailjs-com": "^3.2.0",
-        "p-limit": "^6.2.0",
         "react": "^18.2.0",
         "react-bootstrap": "^2.7.0",
         "react-dev-utils": "^12.0.1",
@@ -17,6 +16,7 @@
         "react-transition-group": "^4.4.2",
         "react-typed": "^2.0.12",
         "sass": "^1.85.1",
+        "three": "^0.174.0",
         "typewriter-effect": "^2.18.2",
         "web-vitals": "^3.1.1",
         "yocto-queue": "^1.1.1"
