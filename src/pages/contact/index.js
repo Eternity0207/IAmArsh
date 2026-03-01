@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import * as emailjs from "emailjs-com";
 import "./style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { meta } from "../../content_option";
-import { Container, Row, Col, Alert } from "react-bootstrap";
-import { contactConfig } from "../../content_option";
+import { meta, contactConfig } from "../../content_option";
+import { HiOutlineEnvelope } from "react-icons/hi2";
+import useScrollReveal from "../../hooks/useScrollReveal";
 
 export const ContactUs = () => {
+  const revealRef = useScrollReveal();
   const [formData, setFormdata] = useState({
     email: "",
     name: "",
@@ -19,7 +20,7 @@ export const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormdata({ loading: true });
+    setFormdata({ ...formData, loading: true });
 
     const templateParams = {
       from_name: formData.email,
@@ -37,24 +38,24 @@ export const ContactUs = () => {
       )
       .then(
         (result) => {
-          console.log(result.text);
           setFormdata({
             loading: false,
-            alertmessage: "Your message has been delivered to Arsh! Thank you for your message",
+            alertmessage: "Your message has been delivered to Arsh! Thank you.",
             variant: "success",
+            name: "",
+            email: "",
             message: "",
             show: true,
           });
         },
         (error) => {
-          console.log(error.text);
           setFormdata({
-            alertmessage: `Faild to send your message! Please try again later, ${error.text}`,
-            variant: "danger",
+            ...formData,
+            alertmessage: `Failed to send your message. Please try again later.`,
+            variant: "error",
             show: true,
-            message: "",
+            loading: false,
           });
-          document.getElementsByClassName("co_alert")[0].scrollIntoView();
         }
       );
   };
@@ -68,101 +69,98 @@ export const ContactUs = () => {
 
   return (
     <HelmetProvider>
-      <Container>
+      <div ref={revealRef}>
         <Helmet>
           <meta charSet="utf-8" />
           <title>{meta.title} | Contact</title>
           <meta name="description" content={meta.description} />
         </Helmet>
-        <Row className="mb-5 mt-3 pt-md-3">
-          <Col lg="8">
-            <h1 className="display-4 mb-4">Contact Me</h1>
-            <hr className="t_border my-4 ml-0 text-left" />
-          </Col>
-        </Row>
-        <Row className="sec_sp">
-          <Col lg="12">
-            <Alert
-              //show={formData.show}
-              variant={formData.variant}
-              className={`rounded-0 co_alert ${formData.show ? "d-block" : "d-none"
-                }`}
-              onClose={() => setFormdata({ show: false })}
-              dismissible
+
+        {/* Header */}
+        <section className="section contact-header">
+          <span className="contact-header__label reveal">Get In Touch</span>
+          <h1 className="contact-header__title reveal reveal-delay-1">
+            Let's <span>Talk</span>
+          </h1>
+        </section>
+
+        {/* Contact Content */}
+        <section className="section">
+          {formData.show && (
+            <div
+              className={`contact-alert ${formData.variant} reveal`}
+              style={{ marginBottom: '30px' }}
             >
-              <p className="my-0">{formData.alertmessage}</p>
-            </Alert>
-          </Col>
-          <Col lg="5" className="mb-5">
-            <h3 className="color_sec py-4">Get in touch</h3>
-            <address>
-              <strong>Email:</strong>{" "}
-              <a href={`mailto:${contactConfig.YOUR_EMAIL}`}>
-                {contactConfig.YOUR_EMAIL}
-              </a>
-              <br />
-              <br />
-              {/* {contactConfig.hasOwnProperty("YOUR_FONE") ? (
+              {formData.alertmessage}
+            </div>
+          )}
+
+          <div className="contact-content">
+            {/* Info Side */}
+            <div className="contact-info">
+              <div className="contact-info__item reveal reveal-delay-1">
+                <div className="contact-info__icon">
+                  <HiOutlineEnvelope />
+                </div>
+                <div className="contact-info__label">Email</div>
+                <div className="contact-info__value">
+                  <a href={`mailto:${contactConfig.YOUR_EMAIL}`}>
+                    {contactConfig.YOUR_EMAIL}
+                  </a>
+                </div>
+              </div>
+
+              <div className="contact-info__desc reveal reveal-delay-2">
                 <p>
-                  <strong>Phone:</strong> {contactConfig.YOUR_FONE}
+                  Need some help? Whether you have questions, need support, or
+                  just want to say hello, feel free to reach out. Fill out the
+                  form and I'll get back to you as soon as possible!
                 </p>
-              ) : (
-                ""
-              )} */}
-            </address>
-            <p dangerouslySetInnerHTML={{ __html: contactConfig.description }}></p>
-          </Col>
-          <Col lg="7" className="d-flex align-items-center">
-            <form onSubmit={handleSubmit} className="contact__form w-100">
-              <Row>
-                <Col lg="6" className="form-group">
-                  <input
-                    className="form-control"
-                    id="name"
-                    name="name"
-                    placeholder="Name"
-                    value={formData.name || ""}
-                    type="text"
-                    required
-                    onChange={handleChange}
-                  />
-                </Col>
-                <Col lg="6" className="form-group">
-                  <input
-                    className="form-control rounded-0"
-                    id="email"
-                    name="email"
-                    placeholder="Email"
-                    type="email"
-                    value={formData.email || ""}
-                    required
-                    onChange={handleChange}
-                  />
-                </Col>
-              </Row>
+              </div>
+            </div>
+
+            {/* Form Side */}
+            <form className="contact-form reveal-right" onSubmit={handleSubmit}>
+              <div className="contact-form__row">
+                <input
+                  className="contact-form__input"
+                  name="name"
+                  placeholder="Your Name"
+                  value={formData.name || ""}
+                  type="text"
+                  required
+                  onChange={handleChange}
+                />
+                <input
+                  className="contact-form__input"
+                  name="email"
+                  placeholder="Your Email"
+                  type="email"
+                  value={formData.email || ""}
+                  required
+                  onChange={handleChange}
+                />
+              </div>
               <textarea
-                className="form-control rounded-0"
-                id="message"
+                className="contact-form__textarea"
                 name="message"
-                placeholder="Message"
+                placeholder="Your Message"
                 rows="5"
-                value={formData.message}
+                value={formData.message || ""}
                 onChange={handleChange}
                 required
-              ></textarea>
-              <br />
-              <Row>
-                <Col lg="12" className="form-group">
-                  <button className="btn ac_btn" type="submit">
-                    {formData.loading ? "Sending..." : "Send"}
-                  </button>
-                </Col>
-              </Row>
+              />
+              <div>
+                <button className="btn-primary-custom" type="submit">
+                  {formData.loading ? "Sending..." : "Send Message"}
+                </button>
+              </div>
             </form>
-          </Col>
-        </Row>
-      </Container>
-      <div className={formData.loading ? "loading-bar" : "d-none"}></div>
+          </div>
+        </section>
+
+        {formData.loading && <div className="loading-bar" />}
+      </div>
     </HelmetProvider>
   );
 };

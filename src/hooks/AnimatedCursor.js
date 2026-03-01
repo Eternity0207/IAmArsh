@@ -1,329 +1,151 @@
-import React, {useEffect,useRef,useState,useCallback} from "react"
+import React, { useEffect, useRef, useCallback } from "react";
 
 const IsDevice = (() => {
-    if (typeof navigator == 'undefined') return
-  
-    let ua = navigator.userAgent
-  
-    return {
-      info: ua,
-  
-      Android() {
-        return ua.match(/Android/i)
-      },
-      BlackBerry() {
-        return ua.match(/BlackBerry/i)
-      },
-      IEMobile() {
-        return ua.match(/IEMobile/i)
-      },
-      iOS() {
-        return ua.match(/iPhone|iPad|iPod/i)
-      },
-      iPad() {
-        return (
-          ua.match(/Mac/) &&
-          navigator.maxTouchPoints &&
-          navigator.maxTouchPoints > 2
-        )
-      },
-      OperaMini() {
-        return ua.match(/Opera Mini/i)
-      },
-  
-      /**
-       * Any Device
-       */
-      any() {
-        return (
-          IsDevice.Android() ||
-          IsDevice.BlackBerry() ||
-          IsDevice.iOS() ||
-          IsDevice.iPad() ||
-          IsDevice.OperaMini() ||
-          IsDevice.IEMobile()
-        )
-      }
-    }
-  })()
+  if (typeof navigator === "undefined") return;
+  let ua = navigator.userAgent;
+  return {
+    any() {
+      return (
+        ua.match(/Android/i) ||
+        ua.match(/BlackBerry/i) ||
+        ua.match(/iPhone|iPad|iPod/i) ||
+        ua.match(/Opera Mini/i) ||
+        ua.match(/IEMobile/i) ||
+        (ua.match(/Mac/) && navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+      );
+    },
+  };
+})();
 
+function CursorCore({ color = "212, 168, 83" }) {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const mouse = useRef({ x: -100, y: -100 });
+  const hovering = useRef(false);
+  const clicking = useRef(false);
 
-function useEventListener(eventName, handler, element = document) {
-    const savedHandler = useRef()
-  
-    useEffect(() => {
-      savedHandler.current = handler
-    }, [handler])
-  
-    useEffect(() => {
-      const isSupported = element && element.addEventListener
-      if (!isSupported) return
-  
-      const eventListener = (event) => savedHandler.current(event)
-  
-      element.addEventListener(eventName, eventListener)
-  
-      return () => {
-        element.removeEventListener(eventName, eventListener)
-      }
-    }, [eventName, element])
-  }
-  
-  /**
- * Cursor Core
- * Replaces the native cursor with a custom animated cursor, consisting
- * of an inner and outer dot that scale inversely based on hover or click.
- *
- * @author Stephen Scaff (github.com/stephenscaff)
- *
- * @param {string} color - rgb color value
- * @param {number} outerAlpha - level of alpha transparency for color
- * @param {number} innerSize - inner cursor size in px
- * @param {number} innerScale - inner cursor scale amount
- * @param {number} outerSize - outer cursor size in px
- * @param {number} outerScale - outer cursor scale amount
- * @param {object} outerStyle - style object for outer cursor
- * @param {object} innerStyle - style object for inner cursor
- * @param {array}  clickables - array of clickable selectors
- *
- */
-function CursorCore({
-    outerStyle,
-    innerStyle,
-    color = '220, 90, 90',
-    outerAlpha = 0.3,
-    innerSize = 8,
-    outerSize = 8,
-    outerScale = 6,
-    innerScale = 0.6,
-    trailingSpeed = 8,
-    clickables = [
-      'a',
-      'input[type="text"]',
-      'input[type="email"]',
-      'input[type="number"]',
-      'input[type="submit"]',
-      'input[type="image"]',
-      'label[for]',
-      'select',
-      'textarea',
-      'button',
-      '.link'
-    ]
-  }) {
-    const cursorOuterRef = useRef()
-    const cursorInnerRef = useRef()
-    const requestRef = useRef()
-    const previousTimeRef = useRef()
-    const [coords, setCoords] = useState({ x: 0, y: 0 })
-    const [isVisible, setIsVisible] = useState(false)
-    const [isActive, setIsActive] = useState(false)
-    const [isActiveClickable, setIsActiveClickable] = useState(false)
-    let endX = useRef(0)
-    let endY = useRef(0)
-  
-    /**
-     * Primary Mouse move event
-     * @param {number} clientX - MouseEvent.clientx
-     * @param {number} clientY - MouseEvent.clienty
-     */
-    const onMouseMove = useCallback(({ clientX, clientY }) => {
-      setCoords({ x: clientX, y: clientY })
-      cursorInnerRef.current.style.top = `${clientY}px`
-      cursorInnerRef.current.style.left = `${clientX}px`
-      endX.current = clientX
-      endY.current = clientY
-    }, [])
-  
-    // Outer Cursor Animation Delay
-    const animateOuterCursor = useCallback(
-      (time) => {
-        if (previousTimeRef.current !== undefined) {
-          coords.x += (endX.current - coords.x) / trailingSpeed
-          coords.y += (endY.current - coords.y) / trailingSpeed
-          cursorOuterRef.current.style.top = `${coords.y}px`
-          cursorOuterRef.current.style.left = `${coords.x}px`
-        }
-        previousTimeRef.current = time
-        requestRef.current = requestAnimationFrame(animateOuterCursor)
-      },
-      [requestRef] // eslint-disable-line
-    )
-  
-    // RAF for animateOuterCursor
-    useEffect(() => {
-      requestRef.current = requestAnimationFrame(animateOuterCursor)
-      return () => cancelAnimationFrame(requestRef.current)
-    }, [animateOuterCursor])
-  
-    // Mouse Events State updates
-    const onMouseDown = useCallback(() => setIsActive(true), [])
-    const onMouseUp = useCallback(() => setIsActive(false), [])
-    const onMouseEnterViewport = useCallback(() => setIsVisible(true), [])
-    const onMouseLeaveViewport = useCallback(() => setIsVisible(false), [])
-  
-    useEventListener('mousemove', onMouseMove)
-    useEventListener('mousedown', onMouseDown)
-    useEventListener('mouseup', onMouseUp)
-    useEventListener('mouseover', onMouseEnterViewport)
-    useEventListener('mouseout', onMouseLeaveViewport)
-  
-    // Cursors Hover/Active State
-    useEffect(() => {
-      if (isActive) {
-        cursorInnerRef.current.style.transform = `translate(-50%, -50%) scale(${innerScale})`
-        cursorOuterRef.current.style.transform = `translate(-50%, -50%) scale(${outerScale})`
-      } else {
-        cursorInnerRef.current.style.transform = 'translate(-50%, -50%) scale(1)'
-        cursorOuterRef.current.style.transform = 'translate(-50%, -50%) scale(1)'
-      }
-    }, [innerScale, outerScale, isActive])
-  
-    // Cursors Click States
-    useEffect(() => {
-      if (isActiveClickable) {
-        cursorInnerRef.current.style.transform = `translate(-50%, -50%) scale(${
-          innerScale * 1.2
-        })`
-        cursorOuterRef.current.style.transform = `translate(-50%, -50%) scale(${
-          outerScale * 1.4
-        })`
-      }
-    }, [innerScale, outerScale, isActiveClickable])
-  
-    // Cursor Visibility State
-    useEffect(() => {
-      if (isVisible) {
-        cursorInnerRef.current.style.opacity = 1
-        cursorOuterRef.current.style.opacity = 1
-      } else {
-        cursorInnerRef.current.style.opacity = 0
-        cursorOuterRef.current.style.opacity = 0
-      }
-    }, [isVisible])
-  
-    useEffect(() => {
-      const clickableEls = document.querySelectorAll(clickables.join(','))
-  
-      clickableEls.forEach((el) => {
-        el.style.cursor = 'none'
-  
-        el.addEventListener('mouseover', () => {
-          setIsActive(true)
-        })
-        el.addEventListener('click', () => {
-          setIsActive(true)
-          setIsActiveClickable(false)
-        })
-        el.addEventListener('mousedown', () => {
-          setIsActiveClickable(true)
-        })
-        el.addEventListener('mouseup', () => {
-          setIsActive(true)
-        })
-        el.addEventListener('mouseout', () => {
-          setIsActive(false)
-          setIsActiveClickable(false)
-        })
-      })
-  
-      return () => {
-        clickableEls.forEach((el) => {
-          el.removeEventListener('mouseover', () => {
-            setIsActive(true)
-          })
-          el.removeEventListener('click', () => {
-            setIsActive(true)
-            setIsActiveClickable(false)
-          })
-          el.removeEventListener('mousedown', () => {
-            setIsActiveClickable(true)
-          })
-          el.removeEventListener('mouseup', () => {
-            setIsActive(true)
-          })
-          el.removeEventListener('mouseout', () => {
-            setIsActive(false)
-            setIsActiveClickable(false)
-          })
-        })
-      }
-    }, [isActive, clickables])
-  
-    // Cursor Styles
-    const styles = {
-      cursorInner: {
-        zIndex: 999,
-        display: 'block',
-        position: 'fixed',
-        borderRadius: '50%',
-        width: innerSize,
-        height: innerSize,
-        pointerEvents: 'none',
-        backgroundColor: `rgba(${color}, 1)`,
-        ...(innerStyle && innerStyle),
-        transition: 'opacity 0.15s ease-in-out, transform 0.25s ease-in-out'
-      },
-      cursorOuter: {
-        zIndex: 999,
-        display: 'block',
-        position: 'fixed',
-        borderRadius: '50%',
-        pointerEvents: 'none',
-        width: outerSize,
-        height: outerSize,
-        backgroundColor: `rgba(${color}, ${outerAlpha})`,
-        transition: 'opacity 0.15s ease-in-out, transform 0.15s ease-in-out',
-        willChange: 'transform',
-        ...(outerStyle && outerStyle)
-      }
+  const onMouseMove = useCallback((e) => {
+    mouse.current = { x: e.clientX, y: e.clientY };
+    if (dotRef.current) {
+      dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
     }
-  
-    // Hide / Show global cursor
-    document.body.style.cursor = 'none'
-  
-    return (
-      <React.Fragment>
-        <div ref={cursorOuterRef} style={styles.cursorOuter} />
-        <div ref={cursorInnerRef} style={styles.cursorInner} />
-      </React.Fragment>
-    )
-  }
-  
-  /**
-   * AnimatedCursor
-   * Calls and passes props to CursorCore if not a touch/mobile device.
-   */
-  function AnimatedCursor({
-    outerStyle,
-    innerStyle,
-    color,
-    outerAlpha,
-    innerSize,
-    innerScale,
-    outerSize,
-    outerScale,
-    trailingSpeed,
-    clickables
-  }) {
-    if (typeof navigator !== 'undefined' && IsDevice.any()) {
-      return <React.Fragment></React.Fragment>
+    if (ringRef.current) {
+      ringRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%) scale(${
+        clicking.current ? 0.7 : hovering.current ? 2.2 : 1
+      })`;
     }
-    return (
-      <CursorCore
-        outerStyle={outerStyle}
-        innerStyle={innerStyle}
-        color={color}
-        outerAlpha={outerAlpha}
-        innerSize={innerSize}
-        innerScale={innerScale}
-        outerSize={outerSize}
-        outerScale={outerScale}
-        trailingSpeed={trailingSpeed}
-        clickables={clickables}
-      />
-    )
+  }, []);
+
+  const onMouseDown = useCallback(() => {
+    clicking.current = true;
+    if (ringRef.current) {
+      ringRef.current.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px) translate(-50%, -50%) scale(0.7)`;
+    }
+  }, []);
+
+  const onMouseUp = useCallback(() => {
+    clicking.current = false;
+    if (ringRef.current) {
+      ringRef.current.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px) translate(-50%, -50%) scale(${
+        hovering.current ? 2.2 : 1
+      })`;
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mouseup", onMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [onMouseMove, onMouseDown, onMouseUp]);
+
+  useEffect(() => {
+    const clickables = document.querySelectorAll(
+      'a, button, input, textarea, select, label[for], .link'
+    );
+
+    const enter = () => {
+      hovering.current = true;
+      if (dotRef.current) dotRef.current.style.opacity = "0";
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px) translate(-50%, -50%) scale(2.2)`;
+        ringRef.current.style.borderColor = `rgba(${color}, 0.6)`;
+        ringRef.current.style.backgroundColor = `rgba(${color}, 0.08)`;
+      }
+    };
+    const leave = () => {
+      hovering.current = false;
+      if (dotRef.current) dotRef.current.style.opacity = "1";
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px) translate(-50%, -50%) scale(1)`;
+        ringRef.current.style.borderColor = `rgba(${color}, 0.5)`;
+        ringRef.current.style.backgroundColor = "transparent";
+      }
+    };
+
+    clickables.forEach((el) => {
+      el.style.cursor = "none";
+      el.addEventListener("mouseenter", enter);
+      el.addEventListener("mouseleave", leave);
+    });
+
+    return () => {
+      clickables.forEach((el) => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
+    };
+  }, [color]);
+
+  document.body.style.cursor = "none";
+
+  const dotStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: 10,
+    height: 10,
+    borderRadius: "50%",
+    backgroundColor: `rgb(${color})`,
+    pointerEvents: "none",
+    zIndex: 999999,
+    willChange: "transform",
+    transition: "opacity 0.15s ease",
+  };
+
+  const ringStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: 46,
+    height: 46,
+    borderRadius: "50%",
+    border: `2px solid rgba(${color}, 0.5)`,
+    backgroundColor: "transparent",
+    pointerEvents: "none",
+    zIndex: 999998,
+    willChange: "transform",
+    transition:
+      "transform 0.18s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.25s ease, background-color 0.25s ease, opacity 0.15s ease",
+  };
+
+  return (
+    <>
+      <div ref={ringRef} style={ringStyle} />
+      <div ref={dotRef} style={dotStyle} />
+    </>
+  );
+}
+
+function AnimatedCursor({ color, ...rest }) {
+  if (typeof navigator !== "undefined" && IsDevice.any()) {
+    return null;
   }
-  
- 
-export default AnimatedCursor
+  return <CursorCore color={color} {...rest} />;
+}
+
+export default AnimatedCursor;
