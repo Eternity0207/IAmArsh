@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./style.css";
-import "../../components/cube/style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Container, Row, Col } from "react-bootstrap";
 import {
   dataabout,
   meta,
@@ -10,146 +8,137 @@ import {
   skills,
   services,
 } from "../../content_option";
-import html from "../../assets/images/html.svg";
-import css from "../../assets/images/tailwind.svg";
-import js from "../../assets/images/js.svg";
-import node from "../../assets/images/nodejs.svg";
-import react from "../../assets/images/react.svg";
-import jqeury from "../../assets/images/jqeury.svg";
+import useScrollReveal from "../../hooks/useScrollReveal";
 
 export const About = () => {
+  const revealRef = useScrollReveal();
+  const skillsRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const bars = entry.target.querySelectorAll(".skill-bar__fill");
+            bars.forEach((bar) => {
+              bar.style.width = bar.dataset.width;
+            });
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (skillsRef.current) {
+      observer.observe(skillsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <HelmetProvider>
-      <Container className="About-header">
+      <div ref={revealRef}>
         <Helmet>
           <meta charSet="utf-8" />
-          <title> About | {meta.title}</title>
+          <title>{meta.title} | About</title>
           <meta name="description" content={meta.description} />
         </Helmet>
-        <Row className="mb-5 mt-3 pt-md-3">
-          <Col lg="8">
-            <h1 className="display-4 mb-4">About me</h1>
-            <hr className="t_border my-4 ml-0 text-left" />
-          </Col>
-        </Row>
-        <Row className="sec_sp">
-          <Col lg="5">
-            <h3 className="color_sec py-4">{dataabout.title}</h3>
-          </Col>
-          <Col lg="7" className="d-flex align-items-center">
-            <div>
+
+        {/* Header */}
+        <section className="section about-header">
+          <span className="about-header__label reveal">About Me</span>
+          <h1 className="about-header__title reveal reveal-delay-1">
+            Who <span>Am</span> I?
+          </h1>
+        </section>
+
+        {/* About Introduction */}
+        <section className="section">
+          <div className="about-intro">
+            <div className="about-intro__text reveal-left">
+              <h3>{dataabout.title}</h3>
               <p>{dataabout.aboutme}</p>
             </div>
-          </Col>
-        </Row>
-        <Row className=" sec_sp">
-          <Col lg="5">
-            <h3 className="color_sec py-4">Work Timline</h3>
-          </Col>
-          <Col lg="7">
-            <table className="table caption-top">
-              <tbody>
-                {worktimeline.map((data, i) => {
-                  return (
-                    <tr key={i}>
-                      <th scope="row">{data.jobtitle}</th>
-                      <td>{data.where}</td>
-                      <td>{data.date}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </Col>
-        </Row>
-        <Row className="sec_sp">
-          <Col lg="5">
-            <h3 className="color_sec py-4">Skills</h3>
-          </Col>
-          <Col lg="7">
-            {skills.map((data, i) => {
-              return (
-                <div key={i}>
-                  <h3 className="progress-title">{data.name}</h3>
-                  <div className="progress">
-                    <div
-                      className="progress-bar"
-                      style={{
-                        width: `${data.value}%`,
-                      }}
-                    >
-                      <div className="progress-value">{data.value}%</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </Col>
-        </Row>
-        <Row className="sec_sp">
-          <Col lang="5">
-            <h3 className="color_sec py-4">Services</h3>
-          </Col>
-          <Col lg="7">
-            {services.map((data, i) => {
-              return (
-                <div className="service_ py-4" key={i}>
-                  <h5 className="service__title">{data.title}</h5>
-                  <p className="service_desc">{data.description}</p>
-                </div>
-              );
-            })}
-          </Col>
-        </Row>
-      </Container>
-      <div class="cube">
 
-        <div class="outer-cube">
-          <div class="outer-top">
-            <img src={node} />
+            <div className="about-intro__info reveal-right">
+              <div className="about-info-item">
+                <div className="about-info-item__label">Name</div>
+                <div className="about-info-item__value">Arsh Goyal</div>
+              </div>
+              <div className="about-info-item">
+                <div className="about-info-item__label">Education</div>
+                <div className="about-info-item__value">IIT Jodhpur</div>
+              </div>
+              <div className="about-info-item">
+                <div className="about-info-item__label">Email</div>
+                <div className="about-info-item__value">iamarsh0207@gmail.com</div>
+              </div>
+              <div className="about-info-item">
+                <div className="about-info-item__label">Location</div>
+                <div className="about-info-item__value">India</div>
+              </div>
+            </div>
           </div>
-          <div class="outer-bottom">
-            <img src={js} />
+        </section>
+
+        {/* Work Timeline */}
+        <section className="section" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+          <span className="section-label reveal">Experience</span>
+          <h2 className="section-title reveal">Work Timeline</h2>
+
+          <div className="timeline" style={{ marginTop: '40px' }}>
+            {worktimeline.map((item, i) => (
+              <div key={i} className={`timeline-item reveal reveal-delay-${i + 1}`}>
+                <div className="timeline-item__date">{item.date}</div>
+                <h4 className="timeline-item__title">{item.jobtitle}</h4>
+                <p className="timeline-item__subtitle">{item.where}</p>
+              </div>
+            ))}
           </div>
-          <div class="outer-front">
-            <img src={react} />
+        </section>
+
+        {/* Skills */}
+        <section className="section" ref={skillsRef}>
+          <span className="section-label reveal">Expertise</span>
+          <h2 className="section-title reveal">My Skills</h2>
+
+          <div className="skills-grid" style={{ marginTop: '40px' }}>
+            {skills.map((skill, i) => (
+              <div key={i} className={`skill-item reveal reveal-delay-${(i % 3) + 1}`}>
+                <div className="skill-item__header">
+                  <span className="skill-item__name">{skill.name}</span>
+                  <span className="skill-item__value">{skill.value}%</span>
+                </div>
+                <div className="skill-bar">
+                  <div
+                    className="skill-bar__fill"
+                    data-width={`${skill.value}%`}
+                    style={{ width: 0 }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-          <div class="outer-back">
-            <img src={css} />
+        </section>
+
+        {/* Services */}
+        <section className="section" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)' }}>
+          <span className="section-label reveal">Services</span>
+          <h2 className="section-title reveal">What I Offer</h2>
+
+          <div className="services-grid" style={{ marginTop: '20px' }}>
+            {services.map((service, i) => (
+              <div key={i} className={`service-card reveal reveal-delay-${i + 1}`}>
+                <div className="service-card__number">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <h3 className="service-card__title">{service.title}</h3>
+                <p className="service-card__desc">{service.description}</p>
+              </div>
+            ))}
           </div>
-          <div class="outer-left">
-            <img src={jqeury} />
-          </div>
-          <div class="outer-right">
-            <img src={html} />
-          </div>
-        </div>
-        <div class="inner-cube">
-          <div class="inner-top">
-            <img src={node} />
-          </div>
-          <div class="inner-bottom">
-            <img src={js} />
-          </div>
-          <div class="inner-front">
-            <img src={react} />
-          </div>
-          <div class="inner-back">
-            <img src={css} />
-          </div>
-          <div class="inner-left">
-            <img src={jqeury} />
-          </div>
-          <div class="inner-right">
-            <img src={html} />
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="message">
-          <div class="tip">
-          </div>
-        </div>
+        </section>
       </div>
     </HelmetProvider>
   );

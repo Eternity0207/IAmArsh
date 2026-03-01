@@ -1,71 +1,128 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
-import { VscGrabber, VscClose } from "react-icons/vsc";
-import { Link } from "react-router-dom";
-import { logotext ,socialprofils } from "../content_option";
-import Themetoggle from "../components/themetoggle";
+import { Link, useLocation } from "react-router-dom";
+import { logotext, socialprofils } from "../content_option";
+import {
+  FaGithub,
+  FaTwitter,
+  FaLinkedin,
+  FaInstagram,
+} from "react-icons/fa";
+import {
+  HiOutlineHome,
+  HiOutlineUser,
+  HiOutlineBriefcase,
+  HiOutlineEnvelope,
+} from "react-icons/hi2";
+import { BsSun, BsMoon } from "react-icons/bs";
 
 const Headermain = () => {
-  const [isActive, setActive] = useState("false");
+  const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+  const location = useLocation();
 
-  const handleToggle = () => {
-    setActive(!isActive);
+  const navLinks = [
+    { path: "/", label: "Home", icon: <HiOutlineHome /> },
+    { path: "/about", label: "About", icon: <HiOutlineUser /> },
+    { path: "/portfolio", label: "Portfolio", icon: <HiOutlineBriefcase /> },
+    { path: "/contact", label: "Contact", icon: <HiOutlineEnvelope /> },
+  ];
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const handleNavClick = () => {
+    setIsOpen(false);
+    document.body.classList.remove("ovhidden");
+  };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
     document.body.classList.toggle("ovhidden");
   };
 
   return (
     <>
-      <header className="fixed-top site__header">
-        <div className="d-flex align-items-center justify-content-between">
-          <Link  className="navbar-brand nav_ac" to="/">
-            {logotext}
-          </Link>
-          <div className="d-flex align-items-center">
-          <Themetoggle />
-          <button className="menu__button  nav_ac" onClick={handleToggle}>
-            {!isActive ? <VscClose /> : <VscGrabber />}
-          </button>
-          
+      {/* Mobile header bar */}
+      <div className="mobile-header">
+        <Link to="/" className="logo-text" onClick={handleNavClick}>
+          <span>I</span>Am<span>A</span>rsh
+        </Link>
+        <button className="hamburger-btn" onClick={toggleMenu}>
+          {isOpen ? "✕" : "☰"}
+        </button>
+      </div>
+
+      {/* Mobile overlay */}
+      <div
+        className={`mobile-overlay ${isOpen ? "active" : ""}`}
+        onClick={handleNavClick}
+      />
+
+      {/* Left Sidebar */}
+      <aside className={`sidebar ${isOpen ? "sidebar--open" : ""}`}>
+        <div className="sidebar__logo">
+          <div className="sidebar__logo-text">
+            <span>I</span>Am<span>A</span>rsh
           </div>
+          <div className="sidebar__logo-subtitle">Full Stack Developer</div>
         </div>
 
-        <div className={`site__navigation ${!isActive ? "menu__opend" : ""}`}>
-          <div className="bg__menu h-100">
-            <div className="menu__wrapper">
-              <div className="menu__container p-3">
-                <ul className="the_menu">
-                  <li className="menu_item ">
-                  <Link  onClick={handleToggle} to="/" className="my-3">Home</Link>
-                  </li>
-                  <li className="menu_item">
-                    <Link  onClick={handleToggle} to="/portfolio" className="my-3"> Portfolio</Link>
-                  </li>
-                  <li className="menu_item">
-                  <Link onClick={handleToggle} to="/about" className="my-3">About</Link>
-                  </li>
-                  <li className="menu_item">
-                  <Link onClick={handleToggle} to="/contact" className="my-3"> Contact</Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
+        <nav className="sidebar__nav">
+          <ul className="sidebar__nav-list">
+            {navLinks.map((link) => (
+              <li key={link.path} className="sidebar__nav-item">
+                <Link
+                  to={link.path}
+                  className={`sidebar__nav-link ${
+                    location.pathname === link.path ? "active" : ""
+                  }`}
+                  onClick={handleNavClick}
+                >
+                  {link.icon}
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="sidebar__footer">
+          <div className="sidebar__social">
+            {socialprofils.github && (
+              <a href={socialprofils.github} target="_blank" rel="noopener noreferrer">
+                <FaGithub />
+              </a>
+            )}
+            {socialprofils.linkedin && (
+              <a href={socialprofils.linkedin} target="_blank" rel="noopener noreferrer">
+                <FaLinkedin />
+              </a>
+            )}
+            {socialprofils.instagram && (
+              <a href={socialprofils.instagram} target="_blank" rel="noopener noreferrer">
+                <FaInstagram />
+              </a>
+            )}
+            {socialprofils.twitter && (
+              <a href={socialprofils.twitter} target="_blank" rel="noopener noreferrer">
+                <FaTwitter />
+              </a>
+            )}
           </div>
-          <div className="menu_footer d-flex flex-column flex-md-row justify-content-between align-items-md-center position-absolute w-100 p-3">
-            <div className="d-flex">
-            <a href={socialprofils.linkedin}>LinkedIn</a>
-            <a href={socialprofils.instagram}>Instagram</a>
-            <a href={socialprofils.github}>Github</a>
-            <a href={socialprofils.twitter}>Twitter</a>
-            </div>
-            <p className="copyright m-0">&copy; {logotext}</p>
-          </div>
+
+          <button className="sidebar__theme-toggle" onClick={toggleTheme}>
+            {theme === "dark" ? <BsSun /> : <BsMoon />}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
         </div>
-      </header>
-      <div className="br-top"></div>
-      <div className="br-bottom"></div>
-      <div className="br-left"></div>
-      <div className="br-right"></div>
-      
+      </aside>
     </>
   );
 };

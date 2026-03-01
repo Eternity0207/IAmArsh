@@ -1,42 +1,96 @@
-@media only screen and (max-width: 991px) {
-    .s_c {
-        padding-top: 40px;
-    }
-}
+/* ========================================
+   APP-LEVEL STYLES
+   ======================================== */
 
+/* Page transitions */
 .page-enter {
-    transform: translateY(100%);
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 .page-enter-active {
-    transform: translateY(0%);
-    transition: all 400ms ease-out;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
 }
 
 .page-exit {
-    transform: translateY(0%);
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .page-exit-active {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    transform: translateY(-130%);
-    transition: all 400ms ease-out;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 
-@media (min-width: 1400px) {
-    .container,
-    .container-lg,
-    .container-md,
-    .container-sm,
-    .container-xl,
-    .container-xxl {
-        max-width: 1140px;
-    }
+/* Mobile menu overlay */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile header bar */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--sidebar-border);
+  z-index: 1000;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.mobile-header .logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f0f0f0;
+}
+
+.mobile-header .logo-text span {
+  color: var(--accent);
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f0f0f0;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 991px) {
+  .mobile-header {
+    display: flex;
+  }
+
+  .main-content {
+    padding-top: 60px;
+  }
 }

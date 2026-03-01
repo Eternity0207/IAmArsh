@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
   useLocation,
@@ -8,8 +7,8 @@ import withRouter from "../hooks/withRouter";
 import AppRoutes from "./routes";
 import Headermain from "../header";
 import AnimatedCursor from "../hooks/AnimatedCursor";
+import Particles from "../components/Particles";
 import "./App.css";
-import "../components/stars.scss"
 
 function _ScrollToTop(props) {
   const { pathname } = useLocation();
@@ -23,23 +22,18 @@ const ScrollToTop = withRouter(_ScrollToTop);
 export default function App() {
   return (
     <Router basename={process.env.PUBLIC_URL}>
+      <Particles />
       <div className="cursor__dot">
         <AnimatedCursor
-          innerSize={15}
-          outerSize={15}
-          color="255, 255 ,255"
-          outerAlpha={0.4}
-          innerScale={0.7}
-          outerScale={5}
+          color="212, 168, 83"
         />
       </div>
-      <div id="home" className="intro route bg-image background">
-        <div id="stars" />
-        <div id="stars2" />
-        <div id="stars3" />
+      <div className="app-layout">
         <ScrollToTop>
           <Headermain />
-          <AppRoutes />
+          <div className="main-content">
+            <AppRoutes />
+          </div>
         </ScrollToTop>
       </div>
     </Router>

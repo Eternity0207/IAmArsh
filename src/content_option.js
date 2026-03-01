@@ -1,6 +1,6 @@
 const logotext = "I Am ARSH";
 const meta = {
-    title: "Arsh Goyal",
+    title: "IAmArsh",
     description: "I’m Arsh Goyal, full stack web developer, currently studying in IIT Jodhpur",
 };
 
@@ -21,45 +21,95 @@ const dataabout = {
 };
 const worktimeline = [
     {
-        jobtitle: "Making Personal Projects",
-        where: "IITJ",
-        date: "2024",
+        jobtitle: "Freelance Web Developer",
+        where: "Self-Employed",
+        date: "Jul 2025 – Present",
+    },
+    {
+        jobtitle: "Project Contributor — WAVE",
+        where: "IIT Jodhpur",
+        date: "Jun 2025 – Sep 2025",
+    },
+    {
+        jobtitle: "Personal Projects & Open Source",
+        where: "IIT Jodhpur",
+        date: "2024 – Present",
     },
 ];
 
 const skills = [{
-        name: "HTML",
+        name: "JavaScript",
         value: 90,
     },
     {
-        name: "CSS",
+        name: "Python",
         value: 85,
     },
     {
-        name: "Javascript",
+        name: "C/C++",
         value: 80,
     },
     {
         name: "React",
-        value: 70,
-    },
-    {
-        name: "Jquery",
         value: 85,
     },
     {
-        name: "NodeJs",
+        name: "Node.js",
+        value: 85,
+    },
+    {
+        name: "TypeScript",
         value: 75,
+    },
+    {
+        name: "MongoDB",
+        value: 80,
+    },
+    {
+        name: "Express.js",
+        value: 80,
+    },
+    {
+        name: "HTML/CSS",
+        value: 90,
+    },
+    {
+        name: "Git & Docker",
+        value: 80,
+    },
+    {
+        name: "PyTorch",
+        value: 70,
+    },
+    {
+        name: "REST APIs",
+        value: 85,
     },
 ];
 
 const services = [{
-        title: "UI & UX Design",
-        description: "I create intuitive and visually appealing designs that make digital experiences seamless and enjoyable. With a focus on user needs, I blend aesthetics with functionality to craft interfaces that truly work."
+        title: "Full-Stack Web Development",
+        description: "End-to-end web applications built with the MERN stack — React frontends, Node/Express backends, and MongoDB databases. From landing pages to complex dashboards, I ship production-ready code."
     },
     {
-        title: "Website Designing",
-        description: "Custom websites crafted for efficiency, aesthetics, and reliability. Every design is built with precision, ensuring smooth navigation, responsiveness, and a strong online presence."
+        title: "Freelance Website Design",
+        description: "Custom websites tailored to your brand — responsive, fast, and SEO-friendly. Whether it's a portfolio, business site, or e-commerce platform, I deliver polished results on time."
+    },
+    {
+        title: "UI & UX Design",
+        description: "Clean, intuitive interfaces that put users first. I design with purpose — blending modern aesthetics, smooth interactions, and dark/light theming into every project."
+    },
+    {
+        title: "API & Backend Services",
+        description: "RESTful APIs, OAuth integrations, real-time sockets, and secure backends. I architect server-side solutions that are scalable, well-documented, and built to last."
+    },
+    {
+        title: "ML & Data Solutions",
+        description: "From PyTorch models to data pipelines with Pandas and NumPy — I build machine learning prototypes and visualization tools that turn raw data into actionable insights."
+    },
+    {
+        title: "DevOps & Deployment",
+        description: "Git workflows, Docker containers, and cloud deployments on GCP. I handle CI/CD, environment setup, and infrastructure so your project runs smoothly from dev to production."
     },
 ];
 
@@ -79,7 +129,7 @@ const contactConfig = {
 const socialprofils = {
     github: "https://github.com/Eternity0207",
     instagram: "https://www.instagram.com/sin_master_69/",
-    linkedin: "https://linkedin.com",
+    linkedin: "https://www.linkedin.com/in/arshgoyal0607/",
     twitter: "https://x.com/H4CK5R1",
 };
 export {

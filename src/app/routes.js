@@ -1,11 +1,10 @@
 import React from "react";
-import { Route, Routes} from "react-router-dom";
-import withRouter from "../hooks/withRouter"
+import { Route, Routes } from "react-router-dom";
+import withRouter from "../hooks/withRouter";
 import { Home } from "../pages/home";
 import { Portfolio } from "../pages/portfolio";
 import { ContactUs } from "../pages/contact";
 import { About } from "../pages/about";
-import { Socialicons } from "../components/socialicons";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const AnimatedRoutes = withRouter(({ location }) => (
@@ -14,7 +13,7 @@ const AnimatedRoutes = withRouter(({ location }) => (
       key={location.key}
       timeout={{
         enter: 400,
-        exit: 400,
+        exit: 300,
       }}
       classNames="page"
       unmountOnExit
@@ -31,12 +30,7 @@ const AnimatedRoutes = withRouter(({ location }) => (
 ));
 
 function AppRoutes() {
-  return (
-    <div className="s_c">
-      <AnimatedRoutes />
-      <Socialicons />
-    </div>
-  );
+  return <AnimatedRoutes />;
 }
 
 export default AppRoutes;
