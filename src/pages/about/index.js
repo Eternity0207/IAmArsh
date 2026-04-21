@@ -6,13 +6,13 @@ import {
   meta,
   worktimeline,
   skills,
-  services,
 } from "../../content_option";
 import useScrollReveal from "../../hooks/useScrollReveal";
 
 export const About = () => {
   const revealRef = useScrollReveal();
   const skillsRef = useRef(null);
+  const pageRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,9 +36,28 @@ export const About = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Skeleton-system: briefly show a "system initializing" state on mount,
+  // then fade to the stable layout. CSS does the heavy lifting via the
+  // `is-building` class — JS just toggles it once.
+  useEffect(() => {
+    const el = pageRef.current;
+    if (!el) return;
+    // Respect reduced-motion users: skip the intro animation entirely.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+    el.classList.add("is-building");
+    const t = setTimeout(() => el.classList.remove("is-building"), 1800);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <HelmetProvider>
-      <div ref={revealRef}>
+      <div ref={(node) => { revealRef.current = node; pageRef.current = node; }} className="about-page">
         <Helmet>
           <meta charSet="utf-8" />
           <title>{meta.title} | About</title>
@@ -56,6 +75,8 @@ export const About = () => {
         {/* About Introduction */}
         <section className="section">
           <div className="about-intro">
+            {/* Skeleton frame — draws corner/edge lines on mount */}
+            <span className="about-intro__frame" aria-hidden="true" />
             <div className="about-intro__text reveal-left">
               <h3>{dataabout.title}</h3>
               <p>{dataabout.aboutme}</p>
@@ -88,13 +109,27 @@ export const About = () => {
           <h2 className="section-title reveal">Work Timeline</h2>
 
           <div className="timeline" style={{ marginTop: '40px' }}>
-            {worktimeline.map((item, i) => (
-              <div key={i} className={`timeline-item reveal reveal-delay-${i + 1}`}>
-                <div className="timeline-item__date">{item.date}</div>
-                <h4 className="timeline-item__title">{item.jobtitle}</h4>
-                <p className="timeline-item__subtitle">{item.where}</p>
-              </div>
-            ))}
+            {worktimeline.map((item, i) => {
+              const isCurrent = /present/i.test(item.date);
+              return (
+                <div
+                  key={i}
+                  className={`timeline-item reveal reveal-delay-${i + 1} ${
+                    isCurrent ? "timeline-item--current" : ""
+                  }`}
+                >
+                  <div className="timeline-item__date">
+                    {item.date}
+                    {isCurrent && <span className="timeline-item__pulse" aria-hidden="true" />}
+                  </div>
+                  <h4 className="timeline-item__title">{item.jobtitle}</h4>
+                  <p className="timeline-item__subtitle">{item.where}</p>
+                  {item.description && (
+                    <p className="timeline-item__desc">{item.description}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -117,24 +152,6 @@ export const About = () => {
                     style={{ width: 0 }}
                   />
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Services */}
-        <section className="section" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)' }}>
-          <span className="section-label reveal">Services</span>
-          <h2 className="section-title reveal">What I Offer</h2>
-
-          <div className="services-grid" style={{ marginTop: '20px' }}>
-            {services.map((service, i) => (
-              <div key={i} className={`service-card reveal reveal-delay-${i + 1}`}>
-                <div className="service-card__number">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <h3 className="service-card__title">{service.title}</h3>
-                <p className="service-card__desc">{service.description}</p>
               </div>
             ))}
           </div>

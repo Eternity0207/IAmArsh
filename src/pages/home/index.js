@@ -20,17 +20,19 @@ export const Home = () => {
 
         {/* Hero Section */}
         <section className="home-hero">
-
           <div className="home-hero__content">
             <div className="home-hero__greeting reveal reveal-delay-1">
               Hello, I'm
             </div>
             <h1 className="home-hero__title reveal reveal-delay-2">
-              {introdata.title.replace("I'm ", "").split(" ").map((word, i) => (
-                <React.Fragment key={i}>
-                  {i === 0 ? <span>{word}</span> : ` ${word}`}
-                </React.Fragment>
-              ))}
+              {introdata.title
+                .replace("I'm ", "")
+                .split(" ")
+                .map((word, i) => (
+                  <React.Fragment key={i}>
+                    {i === 0 ? <span>{word}</span> : ` ${word}`}
+                  </React.Fragment>
+                ))}
             </h1>
             <div className="home-hero__typewriter reveal reveal-delay-3">
               <Typewriter
@@ -65,27 +67,40 @@ export const Home = () => {
           </div>
         </section>
 
-        {/* Services Section */}
+        {/* Services — clean grid, four technical domains */}
         <section className="section home-services">
-          <span className="section-label reveal">What I Do</span>
-          <h2 className="section-title reveal">My Services</h2>
-          <p className="section-desc reveal">
-            Crafting digital experiences with precision and creativity.
-          </p>
+          <div className="home-services__inner">
+            <span className="section-label reveal">What I Build</span>
+            <h2 className="section-title reveal">Systems, not pages.</h2>
+            <p className="section-desc reveal">
+              I work on the layer beneath the interface — backend infrastructure,
+              AI integrations, and the tooling engineers actually use.
+            </p>
 
-          <div className="services-grid">
-            {services.map((service, i) => (
-              <div
-                key={i}
-                className={`service-card reveal reveal-delay-${i + 1}`}
-              >
-                <div className="service-card__number">
-                  {String(i + 1).padStart(2, "0")}
+            <div className="home-services__grid">
+              {services.map((service, i) => (
+                <div
+                  key={i}
+                  className={`svc-card reveal reveal-delay-${i + 1}`}
+                >
+                  <div className="svc-card__head">
+                    <span className="svc-card__index">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="svc-card__marker" aria-hidden="true" />
+                  </div>
+                  <h3 className="svc-card__title">{service.title}</h3>
+                  <p className="svc-card__desc">{service.description}</p>
+                  {service.tech && (
+                    <ul className="svc-card__tech">
+                      {service.tech.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                <h3 className="service-card__title">{service.title}</h3>
-                <p className="service-card__desc">{service.description}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
       </div>

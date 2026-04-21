@@ -21,19 +21,28 @@ const dataabout = {
 };
 const worktimeline = [
     {
+        jobtitle: "Backend Developer",
+        where: "CareEase",
+        date: "Mar 2026 – Present",
+        description: "Building backend services and system-level infrastructure — designing APIs, data flow, and auth primitives that the rest of the product depends on.",
+    },
+    {
         jobtitle: "Freelance Web Developer",
         where: "Self-Employed",
         date: "Jul 2025 – Present",
+        description: "Shipping production websites and full-stack applications for clients end-to-end — from design systems to deployment.",
     },
     {
         jobtitle: "Project Contributor — WAVE",
         where: "IIT Jodhpur",
         date: "Jun 2025 – Sep 2025",
+        description: "Contributed to a campus initiative focused on web-based tooling and developer experience.",
     },
     {
         jobtitle: "Personal Projects & Open Source",
         where: "IIT Jodhpur",
         date: "2024 – Present",
+        description: "Independent work on systems like Whispr, Nexus and Reva — exploring local-first architectures, code intelligence, and OS-level AI.",
     },
 ];
 
@@ -88,28 +97,24 @@ const skills = [{
 ];
 
 const services = [{
-        title: "Full-Stack Web Development",
-        description: "End-to-end web applications built with the MERN stack — React frontends, Node/Express backends, and MongoDB databases. From landing pages to complex dashboards, I ship production-ready code."
+        title: "Backend Systems",
+        description: "Designing and building the server-side of products — APIs, auth, data flow, and the internal primitives other engineers depend on. Focused on clarity, observability, and predictable behavior under load.",
+        tech: ["Node.js", "Python", "PostgreSQL", "Redis"],
     },
     {
-        title: "Freelance Website Design",
-        description: "Custom websites tailored to your brand — responsive, fast, and SEO-friendly. Whether it's a portfolio, business site, or e-commerce platform, I deliver polished results on time."
+        title: "AI Systems",
+        description: "Practical AI integrations — LLM pipelines, agents, retrieval, and OS-level assistants. I build systems that reason about real context, not demos. PyTorch for modeling, structured orchestration for production.",
+        tech: ["PyTorch", "LLMs", "Agents", "RAG"],
     },
     {
-        title: "UI & UX Design",
-        description: "Clean, intuitive interfaces that put users first. I design with purpose — blending modern aesthetics, smooth interactions, and dark/light theming into every project."
+        title: "Scalable Architecture",
+        description: "Structuring systems that survive growth — service boundaries, caching layers, queue-driven workflows, and clean data contracts. Built to scale with traffic, team size, and product scope.",
+        tech: ["Microservices", "Docker", "Queues", "CI/CD"],
     },
     {
-        title: "API & Backend Services",
-        description: "RESTful APIs, OAuth integrations, real-time sockets, and secure backends. I architect server-side solutions that are scalable, well-documented, and built to last."
-    },
-    {
-        title: "ML & Data Solutions",
-        description: "From PyTorch models to data pipelines with Pandas and NumPy — I build machine learning prototypes and visualization tools that turn raw data into actionable insights."
-    },
-    {
-        title: "DevOps & Deployment",
-        description: "Git workflows, Docker containers, and cloud deployments on GCP. I handle CI/CD, environment setup, and infrastructure so your project runs smoothly from dev to production."
+        title: "Developer Tools",
+        description: "Tools that make engineering work visible — code intelligence, graph-based navigation, diffs that read like thought. The kind of tooling I wish existed while working on large codebases.",
+        tech: ["Graph Systems", "Static Analysis", "DX", "Tooling"],
     },
 ];
 
