@@ -46,6 +46,112 @@
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: start;
+  position: relative;
+}
+
+/* =====================================================================
+   SKELETON "SYSTEM BUILDING" LOADING EFFECT
+   - Runs once on mount (.is-building toggled by JS)
+   - Thin gold lines briefly trace the intro frame, then fade
+   - ZERO layout impact: all elements are position:absolute inside a
+     position:relative parent
+   ===================================================================== */
+
+/* Light, settled state on the intro content. In 'building' mode we dim it
+   down briefly; this is the only content-level effect. */
+.about-page.is-building .about-intro__text,
+.about-page.is-building .about-intro__info {
+  opacity: 0.55;
+  filter: blur(0.3px);
+  transition: opacity 0.9s ease 0.3s, filter 0.9s ease 0.3s;
+}
+
+/* Frame — absolute overlay, doesn't affect layout height. Four 1px lines
+   drawn via gradients on the before/after pseudo elements so there's no
+   extra DOM. */
+.about-intro__frame {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.about-intro__frame::before,
+.about-intro__frame::after {
+  content: "";
+  position: absolute;
+  background: rgba(var(--accent-rgb), 0.35);
+}
+
+/* Top + bottom hairlines — scale from center on build */
+.about-intro__frame::before {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-intro__frame::after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+.about-page.is-building .about-intro__frame { opacity: 1; }
+.about-page.is-building .about-intro__frame::before,
+.about-page.is-building .about-intro__frame::after {
+  transform: scaleX(1);
+}
+
+/* Corner ticks — render via box-shadows on the frame element itself,
+   so still zero extra DOM. Four small tick squares fade in during build. */
+.about-intro__frame {
+  box-shadow: none;
+}
+.about-page.is-building .about-intro__frame {
+  box-shadow:
+    inset 0 0 0 0 transparent,
+    -3px -3px 0 0 rgba(var(--accent-rgb), 0.5),
+    calc(100% - 100% + 3px) -3px 0 0 rgba(var(--accent-rgb), 0.5);
+  /* The negative/expression shadows above are visual hints; the real
+     corner ticks are drawn below via an SVG-like gradient trick. */
+}
+
+/* Four corner ticks implemented as background gradients (zero extra DOM,
+   zero layout impact). */
+.about-intro__frame {
+  background:
+    linear-gradient(to right, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 0 0 / 8px 1px no-repeat,
+    linear-gradient(to bottom, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 0 0 / 1px 8px no-repeat,
+    linear-gradient(to left, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 100% 0 / 8px 1px no-repeat,
+    linear-gradient(to bottom, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 100% 0 / 1px 8px no-repeat,
+    linear-gradient(to right, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 0 100% / 8px 1px no-repeat,
+    linear-gradient(to top, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 0 100% / 1px 8px no-repeat,
+    linear-gradient(to left, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 100% 100% / 8px 1px no-repeat,
+    linear-gradient(to top, rgba(var(--accent-rgb), 0.45) 0 8px, transparent 8px) 100% 100% / 1px 8px no-repeat;
+}
+
+/* Reduced motion: no skeleton build, no frame animation */
+@media (prefers-reduced-motion: reduce) {
+  .about-intro__frame,
+  .about-intro__frame::before,
+  .about-intro__frame::after {
+    transition: none;
+  }
+  .about-page.is-building .about-intro__text,
+  .about-page.is-building .about-intro__info {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 .about-intro__text h3 {
@@ -145,6 +251,47 @@
   color: var(--text-secondary);
 }
 
+.timeline-item__desc {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-top: 10px;
+  max-width: 640px;
+}
+
+.timeline-item__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* "Currently here" pulse — reserved for entries whose date includes "Present".
+   Kept small and slow to match the calm design language. */
+.timeline-item__pulse {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.5);
+  animation: timeline-pulse 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes timeline-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(var(--accent-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); }
+}
+
+.timeline-item--current::before {
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item__pulse { animation: none; }
+}
+
 /* Skills */
 .skills-grid {
   display: grid;
@@ -211,4 +358,8 @@
   .about-header {
     padding-top: 80px;
   }
+
+  /* Mobile: suppress skeleton frame — the reveals already convey motion
+     and the frame ticks look heavy on narrow viewports. */
+  .about-intro__frame { display: none; }
 }
