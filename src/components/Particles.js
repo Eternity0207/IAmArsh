@@ -36,10 +36,11 @@ const Particles = () => {
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * dims.current.w,
       y: Math.random() * dims.current.h,
-      baseSize: Math.random() * 1.8 + 0.6,
+      baseSize: Math.random() * 1.6 + 0.5,
       vx: (Math.random() - 0.5) * 0.25,
       vy: (Math.random() - 0.5) * 0.25,
-      opacity: Math.random() * 0.4 + 0.15,
+      // 0.06–0.18 opacity — truly ambient, never competes with content.
+      opacity: Math.random() * 0.12 + 0.06,
       phase: Math.random() * Math.PI * 2,
       phaseSpeed: Math.random() * 0.015 + 0.004,
     }));
@@ -59,6 +60,31 @@ const Particles = () => {
     const animate = () => {
       const { w, h } = dims.current;
       ctx.clearRect(0, 0, w, h);
+
+      // Ambient golden gradient painted INTO the same canvas — this keeps
+      // the background as a single cohesive layer (one GPU composite) rather
+      // than stacking extra DOM nodes for gradients. Extremely low opacity
+      // so it never competes with content.
+      //   - Top-left: very faint warm glow
+      //   - Bottom-center: soft rising glow (prevents "dead" bottom)
+      const topGlow = ctx.createRadialGradient(
+        w * 0.15, h * 0.1, 0, w * 0.15, h * 0.1, Math.max(w, h) * 0.55
+      );
+      topGlow.addColorStop(0, "rgba(212, 168, 83, 0.035)");
+      topGlow.addColorStop(0.4, "rgba(212, 168, 83, 0.012)");
+      topGlow.addColorStop(1, "rgba(212, 168, 83, 0)");
+      ctx.fillStyle = topGlow;
+      ctx.fillRect(0, 0, w, h);
+
+      const bottomGlow = ctx.createRadialGradient(
+        w * 0.5, h + 40, 0, w * 0.5, h + 40, Math.max(w, h) * 0.6
+      );
+      bottomGlow.addColorStop(0, "rgba(212, 168, 83, 0.06)");
+      bottomGlow.addColorStop(0.3, "rgba(212, 168, 83, 0.02)");
+      bottomGlow.addColorStop(1, "rgba(212, 168, 83, 0)");
+      ctx.fillStyle = bottomGlow;
+      ctx.fillRect(0, 0, w, h);
+
       const mx = mouse.current.x;
       const my = mouse.current.y;
       const particles = particlesRef.current;
@@ -125,7 +151,7 @@ const Particles = () => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECT_DIST) {
-            const alpha = 0.06 * (1 - dist / CONNECT_DIST);
+            const alpha = 0.035 * (1 - dist / CONNECT_DIST);
             ctx.beginPath();
             ctx.strokeStyle = `rgba(212, 168, 83, ${alpha})`;
             ctx.lineWidth = 0.5;
@@ -144,7 +170,7 @@ const Particles = () => {
           const dy = p.y - my;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < MOUSE_CONNECT_DIST) {
-            const alpha = 0.18 * (1 - dist / MOUSE_CONNECT_DIST);
+            const alpha = 0.12 * (1 - dist / MOUSE_CONNECT_DIST);
             ctx.beginPath();
             ctx.strokeStyle = `rgba(212, 168, 83, ${alpha})`;
             ctx.lineWidth = 0.8;
