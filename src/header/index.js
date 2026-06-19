@@ -71,7 +71,7 @@ const Headermain = () => {
           <div className="sidebar__logo-text">
             <span>I</span>Am<span>A</span>rsh
           </div>
-          <div className="sidebar__logo-subtitle">Full Stack Developer</div>
+          <div className="sidebar__logo-subtitle">Full Stack Engineer</div>
         </div>
 
         <nav className="sidebar__nav">
