@@ -260,6 +260,26 @@
   max-width: 640px;
 }
 
+.timeline-item__certificate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.timeline-item__certificate:hover {
+  border-bottom-color: var(--accent);
+  opacity: 0.85;
+}
+
 .timeline-item__date {
   display: inline-flex;
   align-items: center;

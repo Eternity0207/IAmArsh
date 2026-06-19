@@ -1,7 +1,7 @@
 const logotext = "I Am ARSH";
 const meta = {
     title: "IAmArsh",
-    description: "I’m Arsh Goyal, full stack web developer, currently studying in IIT Jodhpur",
+    description: "I’m Arsh Goyal, full stack engineer, currently studying in IIT Jodhpur",
 };
 
 const introdata = {
@@ -17,14 +17,27 @@ const introdata = {
 
 const dataabout = {
     title: "Who Am I?",
-    aboutme: "A passionate full-stack developer with a knack for competitive programming, web development, and problem-solving. Always exploring new technologies and crafting efficient, user-friendly digital solutions.",
+    aboutme: "A passionate full stack engineer with a knack for competitive programming, web development, and problem-solving. Always exploring new technologies and crafting efficient, user-friendly digital solutions.",
 };
 const worktimeline = [
     {
-        jobtitle: "Backend Developer",
-        where: "CareEase",
+        jobtitle: "Full Stack Engineer",
+        where: "24x7 Saraltech",
+        date: "Jun 2026 – Present",
+        description: "Building end-to-end features on the MEAN stack for an AI agent platform that runs around the clock — server-side APIs, integrations, and production workflows that keep the product live 24/7.",
+    },
+    {
+        jobtitle: "Backend Development Intern",
+        where: "CareEase Homecare Services Pvt. Ltd.",
         date: "Mar 2026 – Present",
-        description: "Building backend services and system-level infrastructure — designing APIs, data flow, and auth primitives that the rest of the product depends on.",
+        description: "Architecting RESTful APIs with Node.js and Express for production healthcare workflows — PostgreSQL schema and query optimization cut data-fetch latency by 40%. JWT auth with RBAC, AWS S3 for compliant file storage, and Jest suites at 85% coverage.",
+    },
+    {
+        jobtitle: "Backend Development Intern",
+        where: "Intratrade Private Limited",
+        date: "Apr 2026 – May 2026",
+        description: "Backend development on CIMBOXE, an AI-powered market intelligence platform — scalable server architecture, RESTful APIs, and ingestion pipelines that normalize real-time market feeds for AI-driven analytics. Recognized for innovation and professional excellence.",
+        certificate: "https://drive.google.com/file/d/1Z9A3hW-0ifY_6G23mwz2ku2FaTtzIzxt/view?usp=drive_link",
     },
     {
         jobtitle: "Freelance Web Developer",
@@ -133,7 +146,7 @@ const contactConfig = {
 
 const socialprofils = {
     github: "https://github.com/Eternity0207",
-    instagram: "https://www.instagram.com/sin_master_69/",
+    instagram: "https://www.instagram.com/iamarsh.02/",
     linkedin: "https://www.linkedin.com/in/arshgoyal0607/",
     twitter: "https://x.com/H4CK5R1",
 };
