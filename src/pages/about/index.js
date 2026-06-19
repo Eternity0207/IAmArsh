@@ -127,6 +127,16 @@ export const About = () => {
                   {item.description && (
                     <p className="timeline-item__desc">{item.description}</p>
                   )}
+                  {item.certificate && (
+                    <a
+                      href={item.certificate}
+                      className="timeline-item__certificate"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View CIMBOXE internship certificate
+                    </a>
+                  )}
                 </div>
               );
             })}
