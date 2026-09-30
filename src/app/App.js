@@ -1,52 +1,56 @@
 import React, { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  useLocation,
-} from "react-router-dom";
-import withRouter from "../hooks/withRouter";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import { AnimatePresence, MotionConfig } from "framer-motion";
 import AppRoutes from "./routes";
 import Headermain from "../header";
-import AnimatedCursor from "../hooks/AnimatedCursor";
-import Particles from "../components/Particles";
-import IntroBootOverlay from "../components/IntroBootOverlay";
+import Footer from "../components/Footer";
+import CommandPalette from "../components/CommandPalette";
+import Constellation from "../components/Constellation";
+import Preloader, { shouldShowPreloader } from "../components/Preloader";
+import { ScrollProgress } from "../components/motion";
+import { ThemeProvider } from "../hooks/useTheme";
 import "./App.css";
 
-function _ScrollToTop(props) {
+function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
-  return props.children;
+  return null;
 }
-const ScrollToTop = withRouter(_ScrollToTop);
 
 export default function App() {
-  const [showIntro, setShowIntro] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return !window.localStorage.getItem("introSeen_v2");
-  });
-
-  const handleIntroDone = () => {
-    setShowIntro(false);
-  };
+  const [showLoader, setShowLoader] = useState(shouldShowPreloader);
+  const [ready, setReady] = useState(() => !showLoader);
 
   return (
-    <Router basename={process.env.PUBLIC_URL}>
-      {showIntro && <IntroBootOverlay onDone={handleIntroDone} />}
-      <Particles />
-      <div className="cursor__dot">
-        <AnimatedCursor
-          color="212, 168, 83"
-        />
-      </div>
-      <div className={`app-layout ${showIntro ? "app-layout--hidden" : "app-layout--ready"}`}>
-        <ScrollToTop>
-          <Headermain />
-          <div className="main-content">
-            <AppRoutes />
+    <ThemeProvider>
+      <MotionConfig reducedMotion="user">
+        <Router basename={process.env.PUBLIC_URL}>
+          <ScrollToTop />
+          <div className="backdrop" aria-hidden="true">
+            <div className="backdrop__aurora" />
+            <div className="backdrop__grid" />
+            <Constellation />
           </div>
-        </ScrollToTop>
-      </div>
-    </Router>
+
+          <AnimatePresence>
+            {showLoader && <Preloader onReveal={() => setReady(true)} onDone={() => setShowLoader(false)} />}
+          </AnimatePresence>
+
+          {ready && (
+            <>
+              <ScrollProgress />
+              <Headermain />
+              <main>
+                <AppRoutes />
+              </main>
+              <Footer />
+              <CommandPalette />
+            </>
+          )}
+        </Router>
+      </MotionConfig>
+    </ThemeProvider>
   );
 }

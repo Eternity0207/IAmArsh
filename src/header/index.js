@@ -1,129 +1,122 @@
-import React, { useState, useEffect } from "react";
-import "./style.css";
-import { Link, useLocation } from "react-router-dom";
-import { logotext, socialprofils } from "../content_option";
-import {
-  FaGithub,
-  FaTwitter,
-  FaLinkedin,
-  FaInstagram,
-} from "react-icons/fa";
-import {
-  HiOutlineHome,
-  HiOutlineUser,
-  HiOutlineBriefcase,
-  HiOutlineEnvelope,
-} from "react-icons/hi2";
-import { BsSun, BsMoon } from "react-icons/bs";
+import React, { useEffect, useState } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { FiSun, FiMoon, FiMenu, FiX, FiArrowRight, FiCommand } from "react-icons/fi";
+import { logotext } from "../content_option";
+import useTheme from "../hooks/useTheme";
+import { openPalette } from "../components/CommandPalette";
+
+const navLinks = [
+  { path: "/", label: "Home" },
+  { path: "/about", label: "About" },
+  { path: "/portfolio", label: "Work" },
+  { path: "/contact", label: "Contact" },
+];
 
 const Headermain = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-  const location = useLocation();
+  const { theme, toggle } = useTheme();
+  const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { pathname } = useLocation();
+  const { scrollY } = useScroll();
 
-  const navLinks = [
-    { path: "/", label: "Home", icon: <HiOutlineHome /> },
-    { path: "/about", label: "About", icon: <HiOutlineUser /> },
-    { path: "/portfolio", label: "Portfolio", icon: <HiOutlineBriefcase /> },
-    { path: "/contact", label: "Contact", icon: <HiOutlineEnvelope /> },
-  ];
+  // Tuck the nav away while scrolling down; bring it back on any scroll up.
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() || 0;
+    setHidden(y > prev && y > 160 && !open);
+  });
+
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    if (!open) return undefined;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const handleNavClick = () => {
-    setIsOpen(false);
-    document.body.classList.remove("ovhidden");
-  };
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    document.body.classList.toggle("ovhidden");
-  };
+  const isActive = (path) => (path === "/" ? pathname === "/" : pathname.startsWith(path));
 
   return (
-    <>
-      {/* Mobile header bar */}
-      <div className="mobile-header">
-        <Link to="/" className="logo-text" onClick={handleNavClick}>
-          <span>I</span>Am<span>A</span>rsh
+    <motion.header
+      className="nav"
+      initial={{ y: -24, opacity: 0 }}
+      animate={{ y: hidden ? -96 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="nav__bar">
+        <Link to="/" className="nav__logo" aria-label="Home">
+          {logotext}<span>.</span>
         </Link>
-        <button className="hamburger-btn" onClick={toggleMenu}>
-          {isOpen ? "✕" : "☰"}
-        </button>
-      </div>
 
-      {/* Mobile overlay */}
-      <div
-        className={`mobile-overlay ${isOpen ? "active" : ""}`}
-        onClick={handleNavClick}
-      />
-
-      {/* Left Sidebar */}
-      <aside className={`sidebar ${isOpen ? "sidebar--open" : ""}`}>
-        <div className="sidebar__logo">
-          <div className="sidebar__logo-text">
-            <span>I</span>Am<span>A</span>rsh
-          </div>
-          <div className="sidebar__logo-subtitle">Full Stack Engineer</div>
-        </div>
-
-        <nav className="sidebar__nav">
-          <ul className="sidebar__nav-list">
-            {navLinks.map((link) => (
-              <li key={link.path} className="sidebar__nav-item">
-                <Link
-                  to={link.path}
-                  className={`sidebar__nav-link ${
-                    location.pathname === link.path ? "active" : ""
-                  }`}
-                  onClick={handleNavClick}
-                >
-                  {link.icon}
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        <nav className="nav__links" aria-label="Primary">
+          {navLinks.map((l) => (
+            <NavLink key={l.path} to={l.path} end={l.path === "/"} className={`nav__link ${isActive(l.path) ? "active" : ""}`}>
+              {isActive(l.path) && (
+                <motion.span layoutId="nav-pill" className="nav__pill" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
+              )}
+              {l.label}
+            </NavLink>
+          ))}
         </nav>
 
-        <div className="sidebar__footer">
-          <div className="sidebar__social">
-            {socialprofils.github && (
-              <a href={socialprofils.github} target="_blank" rel="noopener noreferrer">
-                <FaGithub />
-              </a>
-            )}
-            {socialprofils.linkedin && (
-              <a href={socialprofils.linkedin} target="_blank" rel="noopener noreferrer">
-                <FaLinkedin />
-              </a>
-            )}
-            {socialprofils.instagram && (
-              <a href={socialprofils.instagram} target="_blank" rel="noopener noreferrer">
-                <FaInstagram />
-              </a>
-            )}
-            {socialprofils.twitter && (
-              <a href={socialprofils.twitter} target="_blank" rel="noopener noreferrer">
-                <FaTwitter />
-              </a>
-            )}
-          </div>
-
-          <button className="sidebar__theme-toggle" onClick={toggleTheme}>
-            {theme === "dark" ? <BsSun /> : <BsMoon />}
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        <div className="nav__actions">
+          <button className="nav__cmdk" onClick={openPalette} aria-label="Open command menu" title="Command menu (Ctrl/⌘ K)">
+            <FiCommand aria-hidden="true" />
+            <span>K</span>
+          </button>
+          <button
+            className="icon-btn"
+            onClick={toggle}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={theme}
+                initial={{ rotate: -90, opacity: 0, scale: 0.6 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 90, opacity: 0, scale: 0.6 }}
+                transition={{ duration: 0.25 }}
+                style={{ display: "grid" }}
+              >
+                {theme === "dark" ? <FiSun /> : <FiMoon />}
+              </motion.span>
+            </AnimatePresence>
+          </button>
+          <button
+            className="icon-btn nav__menu-btn"
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="nav-sheet"
+          >
+            {open ? <FiX /> : <FiMenu />}
           </button>
         </div>
-      </aside>
-    </>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.nav
+            id="nav-sheet"
+            className="nav__sheet"
+            aria-label="Mobile"
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+          >
+            {navLinks.map((l) => (
+              <NavLink key={l.path} to={l.path} end={l.path === "/"} className={isActive(l.path) ? "active" : ""}>
+                {l.label}
+                <FiArrowRight aria-hidden="true" />
+              </NavLink>
+            ))}
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 };
 

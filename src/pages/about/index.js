@@ -1,168 +1,118 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
+import { motion } from "framer-motion";
 import "./style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import {
-  dataabout,
-  meta,
-  worktimeline,
-  skills,
-} from "../../content_option";
-import useScrollReveal from "../../hooks/useScrollReveal";
+import { FiArrowUpRight, FiAward } from "react-icons/fi";
+import { dataabout, meta, worktimeline, skills, achievements, introdata } from "../../content_option";
+import { Card, Reveal, SectionHead, ExtLink } from "../../components/ui";
+import { SplitText, ScrollLine, Magnetic } from "../../components/motion";
+import SkillsExplorer from "../../components/SkillsExplorer";
 
 export const About = () => {
-  const revealRef = useScrollReveal();
-  const skillsRef = useRef(null);
-  const pageRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const bars = entry.target.querySelectorAll(".skill-bar__fill");
-            bars.forEach((bar) => {
-              bar.style.width = bar.dataset.width;
-            });
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    if (skillsRef.current) {
-      observer.observe(skillsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Skeleton-system: briefly show a "system initializing" state on mount,
-  // then fade to the stable layout. CSS does the heavy lifting via the
-  // `is-building` class — JS just toggles it once.
-  useEffect(() => {
-    const el = pageRef.current;
-    if (!el) return;
-    // Respect reduced-motion users: skip the intro animation entirely.
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-    el.classList.add("is-building");
-    const t = setTimeout(() => el.classList.remove("is-building"), 1800);
-    return () => clearTimeout(t);
-  }, []);
+  const { education } = dataabout;
+  const timelineRef = useRef(null);
+  const [lead, rest] = dataabout.title.split(",");
 
   return (
     <HelmetProvider>
-      <div ref={(node) => { revealRef.current = node; pageRef.current = node; }} className="about-page">
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>{meta.title} | About</title>
-          <meta name="description" content={meta.description} />
-        </Helmet>
+      <Helmet>
+        <title>About — {meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Helmet>
 
-        {/* Header */}
-        <section className="section about-header">
-          <span className="about-header__label reveal">About Me</span>
-          <h1 className="about-header__title reveal reveal-delay-1">
-            Who <span>Am</span> I?
+      <div className="page container">
+        <section className="page-hero">
+          <Reveal as="span" className="eyebrow">About</Reveal>
+          <h1>
+            <SplitText text={`${lead},`} />
+            <br />
+            <motion.span
+              className="serif gradient-text"
+              initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              style={{ display: "inline-block" }}
+            >
+              {rest.trim()}
+            </motion.span>
           </h1>
         </section>
 
-        {/* About Introduction */}
-        <section className="section">
-          <div className="about-intro">
-            {/* Skeleton frame — draws corner/edge lines on mount */}
-            <span className="about-intro__frame" aria-hidden="true" />
-            <div className="about-intro__text reveal-left">
-              <h3>{dataabout.title}</h3>
-              <p>{dataabout.aboutme}</p>
+        <section className="about-intro">
+          <Reveal className="about-intro__text">
+            {dataabout.aboutme.map((p, i) => <p key={i}>{p}</p>)}
+            <div className="hero__actions">
+              <Magnetic>
+                <a href={introdata.resume} className="btn btn--primary" target="_blank" rel="noopener noreferrer">
+                  Download résumé <FiArrowUpRight className="arrow" aria-hidden="true" />
+                </a>
+              </Magnetic>
             </div>
+          </Reveal>
 
-            <div className="about-intro__info reveal-right">
-              <div className="about-info-item">
-                <div className="about-info-item__label">Name</div>
-                <div className="about-info-item__value">Arsh Goyal</div>
-              </div>
-              <div className="about-info-item">
-                <div className="about-info-item__label">Education</div>
-                <div className="about-info-item__value">IIT Jodhpur</div>
-              </div>
-              <div className="about-info-item">
-                <div className="about-info-item__label">Email</div>
-                <div className="about-info-item__value">iamarsh0207@gmail.com</div>
-              </div>
-              <div className="about-info-item">
-                <div className="about-info-item__label">Location</div>
-                <div className="about-info-item__value">India</div>
-              </div>
+          <Card className="edu" delay={0.1}>
+            <span className="eyebrow">Education</span>
+            <h3>{education.school}</h3>
+            <p className="muted">{education.degree}</p>
+            <div className="edu__meta">
+              <span className="chip">{education.date}</span>
+              <span className="chip">{education.grade}</span>
             </div>
-          </div>
+          </Card>
         </section>
 
-        {/* Work Timeline */}
-        <section className="section" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
-          <span className="section-label reveal">Experience</span>
-          <h2 className="section-title reveal">Work Timeline</h2>
-
-          <div className="timeline" style={{ marginTop: '40px' }}>
+        <section className="section split">
+          <div className="split__head">
+            <SectionHead index="01" eyebrow="Experience" title="Where I've worked">
+              Five roles across healthcare SaaS, AI market intelligence, CMS platforms and client work.
+            </SectionHead>
+          </div>
+          <ol className="timeline" ref={timelineRef}>
+            <ScrollLine targetRef={timelineRef} />
             {worktimeline.map((item, i) => {
               const isCurrent = /present/i.test(item.date);
               return (
-                <div
-                  key={i}
-                  className={`timeline-item reveal reveal-delay-${i + 1} ${
-                    isCurrent ? "timeline-item--current" : ""
-                  }`}
-                >
-                  <div className="timeline-item__date">
-                    {item.date}
-                    {isCurrent && <span className="timeline-item__pulse" aria-hidden="true" />}
+                <Reveal as="li" key={item.where + item.date} className="timeline__item" delay={i * 0.04}>
+                  <span className={`timeline__dot ${isCurrent ? "is-current" : ""}`} aria-hidden="true" />
+                  <div className="timeline__date">{item.date}</div>
+                  <div className="timeline__body">
+                    <h3>{item.jobtitle}</h3>
+                    <p className="timeline__org">{item.where}</p>
+                    <ul className="timeline__points">
+                      {item.points.map((p) => <li key={p}>{p}</li>)}
+                    </ul>
+                    <div className="timeline__foot">
+                      <div className="chips">
+                        {item.tags.map((t) => <span key={t} className="chip">{t}</span>)}
+                      </div>
+                      {item.certificate && <ExtLink href={item.certificate}>Certificate</ExtLink>}
+                    </div>
                   </div>
-                  <h4 className="timeline-item__title">{item.jobtitle}</h4>
-                  <p className="timeline-item__subtitle">{item.where}</p>
-                  {item.description && (
-                    <p className="timeline-item__desc">{item.description}</p>
-                  )}
-                  {item.certificate && (
-                    <a
-                      href={item.certificate}
-                      className="timeline-item__certificate"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View CIMBOXE internship certificate
-                    </a>
-                  )}
-                </div>
+                </Reveal>
               );
             })}
-          </div>
+          </ol>
         </section>
 
-        {/* Skills */}
-        <section className="section" ref={skillsRef}>
-          <span className="section-label reveal">Expertise</span>
-          <h2 className="section-title reveal">My Skills</h2>
+        <section className="section">
+          <SectionHead index="02" eyebrow="Skills" title="What I work with">
+            All {skills.reduce((n, s) => n + s.items.length, 0)} of them, grouped by area. Pick one to see where it shows up in my work.
+          </SectionHead>
+          <Card className="toolbox">
+            <SkillsExplorer />
+          </Card>
+        </section>
 
-          <div className="skills-grid" style={{ marginTop: '40px' }}>
-            {skills.map((skill, i) => (
-              <div key={i} className={`skill-item reveal reveal-delay-${(i % 3) + 1}`}>
-                <div className="skill-item__header">
-                  <span className="skill-item__name">{skill.name}</span>
-                  <span className="skill-item__value">{skill.value}%</span>
-                </div>
-                <div className="skill-bar">
-                  <div
-                    className="skill-bar__fill"
-                    data-width={`${skill.value}%`}
-                    style={{ width: 0 }}
-                  />
-                </div>
-              </div>
+        <section className="section">
+          <SectionHead index="03" eyebrow="Highlights" title="Achievements" />
+          <div className="achievements">
+            {achievements.map((a, i) => (
+              <Card key={a.title} href={a.link} className="achievement" delay={i * 0.05}>
+                <FiAward className="achievement__icon" aria-hidden="true" />
+                <h4>{a.title}</h4>
+                <p className="muted">{a.detail}</p>
+                {a.date && <span className="chip">{a.date}</span>}
+              </Card>
             ))}
           </div>
         </section>
