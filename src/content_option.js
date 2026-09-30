@@ -12,10 +12,25 @@ const introdata = {
     headline: "I design & build",
     rotating: ["backend systems", "AI agents", "developer tools", "products"],
     headlineEnd: "that ship.",
+    lead: "I design backend systems, wire AI into real workflows, and increasingly own the product decisions around them — currently shipping at Intratrade and 24x7 SaralTech.",
     description: "EE undergrad at IIT Jodhpur. I design APIs and distributed systems, wire LLMs into real workflows, and increasingly own the product side too — PRDs, roadmaps, and the metrics that decide what gets built.",
     location: "Jodhpur, India",
     resume: "https://drive.google.com/file/d/1cKNlUD-u3qwowODphiLZSoYzU_S9l_mf/view?usp=sharing",
 };
+
+// Page sections, in order (used by the nav, section rail and command menu).
+const sections = [
+    { id: "top", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "experience", label: "Experience" },
+    { id: "work", label: "Work" },
+    { id: "skills", label: "Skills" },
+    { id: "highlights", label: "Highlights" },
+    { id: "contact", label: "Contact" },
+];
+
+// Words wrapped in *asterisks* are highlighted as they light up.
+const manifesto = "I'm an electrical engineering student at *IIT Jodhpur* who ended up living in software. I design *APIs*, *distributed systems* and *AI agents* — and lately, the *product decisions* around them. I care about the unglamorous parts: latency, data models, and the thing *actually shipping*.";
 
 const stats = [
     { value: "8.50", label: "CGPA · IIT Jodhpur" },
@@ -182,21 +197,25 @@ const caseStudies = [{
 
 const openSource = [{
         title: "jaegertracing/jaeger",
+        status: "Open PR",
         detail: "PR #8525 — deterministic critical-path sanitisation (+9.6k lines)",
         link: "https://github.com/jaegertracing/jaeger/pull/8525",
     },
     {
         title: "stdlib-js/stdlib",
+        status: "5 merged",
         detail: "5 merged PRs — C & JavaScript lint fixes",
         link: "https://github.com/stdlib-js/stdlib/pulls?q=author%3AEternity0207",
     },
     {
         title: "pgRouting",
+        status: "GSoC",
         detail: "GSoC applicant — C++ clang-tidy PRs",
         link: "https://github.com/pgRouting/pgrouting/pulls?q=author%3AEternity0207",
     },
     {
         title: "Hacktoberfest 2025",
+        status: "24 merged",
         detail: "24 merged PRs — A* in C++, LCS in Python, voice AI, Pac-Man",
         link: "https://github.com/Eternity0207",
     },
@@ -233,6 +252,8 @@ const socialprofils = {
 };
 
 export {
+    sections,
+    manifesto,
     meta,
     dataabout,
     worktimeline,
