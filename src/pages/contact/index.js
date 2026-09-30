@@ -2,164 +2,153 @@ import React, { useState } from "react";
 import * as emailjs from "emailjs-com";
 import "./style.css";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { AnimatePresence, motion } from "framer-motion";
+import { FiArrowUpRight, FiCopy, FiCheck, FiSend } from "react-icons/fi";
 import { meta, contactConfig } from "../../content_option";
-import { HiOutlineEnvelope } from "react-icons/hi2";
-import useScrollReveal from "../../hooks/useScrollReveal";
+import { Card, Reveal } from "../../components/ui";
+import { SplitText, Magnetic } from "../../components/motion";
+import { socialLinks } from "../../components/Footer";
+
+const empty = { name: "", email: "", message: "" };
 
 export const ContactUs = () => {
-  const revealRef = useScrollReveal();
-  const [formData, setFormdata] = useState({
-    email: "",
-    name: "",
-    message: "",
-    loading: false,
-    show: false,
-    alertmessage: "",
-    variant: "",
-  });
+  const [form, setForm] = useState(empty);
+  const [status, setStatus] = useState({ state: "idle", message: "" });
+  const [copied, setCopied] = useState(false);
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormdata({ ...formData, loading: true });
-
-    const templateParams = {
-      from_name: formData.email,
-      user_name: formData.name,
-      to_name: contactConfig.YOUR_EMAIL,
-      message: formData.message,
-    };
+    setStatus({ state: "loading", message: "" });
 
     emailjs
       .send(
         process.env.REACT_APP_EMAILJS_SERVICE_ID,
         process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-        templateParams,
+        {
+          from_name: form.email,
+          user_name: form.name,
+          to_name: contactConfig.YOUR_EMAIL,
+          message: form.message,
+        },
         process.env.REACT_APP_EMAILJS_PUBLIC_KEY
       )
       .then(
-        (result) => {
-          setFormdata({
-            loading: false,
-            alertmessage: "Your message has been delivered to Arsh! Thank you.",
-            variant: "success",
-            name: "",
-            email: "",
-            message: "",
-            show: true,
-          });
+        () => {
+          setForm(empty);
+          setStatus({ state: "success", message: "Message sent — I'll get back to you soon." });
         },
-        (error) => {
-          setFormdata({
-            ...formData,
-            alertmessage: `Failed to send your message. Please try again later.`,
-            variant: "error",
-            show: true,
-            loading: false,
-          });
+        () => {
+          setStatus({ state: "error", message: `Couldn't send right now. Email me directly at ${contactConfig.YOUR_EMAIL}.` });
         }
       );
   };
 
-  const handleChange = (e) => {
-    setFormdata({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(contactConfig.YOUR_EMAIL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch (err) {
+      window.location.href = `mailto:${contactConfig.YOUR_EMAIL}`;
+    }
   };
 
   return (
     <HelmetProvider>
-      <div ref={revealRef}>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>{meta.title} | Contact</title>
-          <meta name="description" content={meta.description} />
-        </Helmet>
+      <Helmet>
+        <title>Contact — {meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Helmet>
 
-        {/* Header */}
-        <section className="section contact-header">
-          <span className="contact-header__label reveal">Get In Touch</span>
-          <h1 className="contact-header__title reveal reveal-delay-1">
-            Let's <span>Talk</span>
-          </h1>
-        </section>
-
-        {/* Contact Content */}
-        <section className="section">
-          {formData.show && (
-            <div
-              className={`contact-alert ${formData.variant} reveal`}
-              style={{ marginBottom: '30px' }}
+      <div className="page container">
+        <section className="page-hero">
+          <Reveal as="span" className="eyebrow">Contact</Reveal>
+          <h1>
+            <SplitText text="Let's build" />{" "}
+            <motion.span
+              className="serif gradient-text"
+              initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              style={{ display: "inline-block" }}
             >
-              {formData.alertmessage}
-            </div>
-          )}
-
-          <div className="contact-content">
-            {/* Info Side */}
-            <div className="contact-info">
-              <div className="contact-info__item reveal reveal-delay-1">
-                <div className="contact-info__icon">
-                  <HiOutlineEnvelope />
-                </div>
-                <div className="contact-info__label">Email</div>
-                <div className="contact-info__value">
-                  <a href={`mailto:${contactConfig.YOUR_EMAIL}`}>
-                    {contactConfig.YOUR_EMAIL}
-                  </a>
-                </div>
-              </div>
-
-              <div className="contact-info__desc reveal reveal-delay-2">
-                <p>
-                  Need some help? Whether you have questions, need support, or
-                  just want to say hello, feel free to reach out. Fill out the
-                  form and I'll get back to you as soon as possible!
-                </p>
-              </div>
-            </div>
-
-            {/* Form Side */}
-            <form className="contact-form reveal-right" onSubmit={handleSubmit}>
-              <div className="contact-form__row">
-                <input
-                  className="contact-form__input"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name || ""}
-                  type="text"
-                  required
-                  onChange={handleChange}
-                />
-                <input
-                  className="contact-form__input"
-                  name="email"
-                  placeholder="Your Email"
-                  type="email"
-                  value={formData.email || ""}
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-              <textarea
-                className="contact-form__textarea"
-                name="message"
-                placeholder="Your Message"
-                rows="5"
-                value={formData.message || ""}
-                onChange={handleChange}
-                required
-              />
-              <div>
-                <button className="btn-primary-custom" type="submit">
-                  {formData.loading ? "Sending..." : "Send Message"}
-                </button>
-              </div>
-            </form>
-          </div>
+              something.
+            </motion.span>
+          </h1>
+          <Reveal as="p" delay={0.3}>{contactConfig.description}</Reveal>
         </section>
 
-        {formData.loading && <div className="loading-bar" />}
+        <section className="section contact">
+          <div className="contact__side">
+            <Card className="contact__email">
+              <span className="eyebrow">Email</span>
+              <a href={`mailto:${contactConfig.YOUR_EMAIL}`} className="contact__address">
+                {contactConfig.YOUR_EMAIL}
+              </a>
+              <button type="button" className="btn btn--ghost" onClick={copyEmail}>
+                {copied ? <FiCheck aria-hidden="true" /> : <FiCopy aria-hidden="true" />}
+                {copied ? "Copied" : "Copy address"}
+              </button>
+            </Card>
+
+            <Card className="contact__socials" delay={0.05}>
+              <span className="eyebrow">Elsewhere</span>
+              <ul>
+                {socialLinks.map((s) => (
+                  <li key={s.label}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer">
+                      <span className="contact__social-icon">{s.icon}</span>
+                      {s.label}
+                      <FiArrowUpRight className="contact__social-arrow" aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+
+          <Card className="contact__form-card" delay={0.1}>
+            <form className="contact__form" onSubmit={handleSubmit}>
+              <div className="field-row">
+                <label className="field">
+                  <span>Name</span>
+                  <input name="name" type="text" autoComplete="name" placeholder="Jane Doe" value={form.name} onChange={handleChange} required />
+                </label>
+                <label className="field">
+                  <span>Email</span>
+                  <input name="email" type="email" autoComplete="email" placeholder="jane@company.com" value={form.email} onChange={handleChange} required />
+                </label>
+              </div>
+              <label className="field">
+                <span>Message</span>
+                <textarea name="message" rows="6" placeholder="What are you working on?" value={form.message} onChange={handleChange} required />
+              </label>
+
+              <AnimatePresence>
+                {(status.state === "success" || status.state === "error") && (
+                  <motion.p
+                    className={`form-alert form-alert--${status.state}`}
+                    role="status"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {status.message}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
+              <Magnetic strength={0.2}>
+                <button className="btn btn--primary" type="submit" disabled={status.state === "loading"}>
+                  {status.state === "loading" ? "Sending…" : "Send message"}
+                  <FiSend aria-hidden="true" className={status.state === "loading" ? "is-flying" : ""} />
+                </button>
+              </Magnetic>
+            </form>
+          </Card>
+        </section>
       </div>
     </HelmetProvider>
   );

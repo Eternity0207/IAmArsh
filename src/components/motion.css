@@ -1,0 +1,595 @@
+/* ==========================================================================
+   Nav: command-menu trigger + logo
+   ========================================================================== */
+
+.nav__cmdk {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 30px;
+  padding: 0 9px;
+  margin-right: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-3);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.nav__cmdk:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+
+.nav__logo {
+  display: inline-block;
+  transition: transform 0.3s var(--ease);
+}
+
+.nav__logo:hover {
+  transform: rotate(-4deg) scale(1.06);
+}
+
+/* ==========================================================================
+   Motion helpers
+   ========================================================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.split-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+.rotating {
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.rotating__word {
+  display: inline-block;
+  padding-right: 0.08em;
+}
+
+.magnetic {
+  display: inline-block;
+}
+
+.tilt {
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.tilt > .card {
+  height: 100%;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 200;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.scroll-line {
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  transform-origin: top;
+  background: linear-gradient(var(--accent), var(--accent-2));
+}
+
+/* ==========================================================================
+   Skills explorer
+   ========================================================================== */
+
+.skx__tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.skx__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.skx__tab {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.skx__tab:hover {
+  color: var(--text);
+}
+
+.skx__tab.is-active {
+  color: var(--on-inverse);
+}
+
+.skx__tab-pill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--inverse);
+}
+
+.skx__count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.skx__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  margin-top: 24px;
+  min-height: 88px;
+}
+
+.skx__chip {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skx__chip:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.1);
+}
+
+.skx__chip.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+:root[data-theme="dark"] .skx__chip.is-active {
+  color: #0b0716;
+}
+
+.skx__panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border-strong);
+  min-height: 72px;
+}
+
+.skx__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.skx__panel-title {
+  font-size: 15px;
+  color: var(--text-2);
+}
+
+.skx__panel-title strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.skx__usage {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.skx__usage a,
+.skx__usage div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  padding: 12px 36px 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.2s ease, transform 0.2s var(--ease);
+}
+
+.skx__usage a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.skx__kind {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.skx__usage-title {
+  font-weight: 500;
+}
+
+.skx__usage-sub {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+
+.skx__usage-arrow {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--text-3);
+}
+
+/* ==========================================================================
+   Command palette + toast
+   ========================================================================== */
+
+.cmdk {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 14vh 16px 16px;
+  background: rgba(9, 9, 11, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.cmdk__dialog {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 18px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.cmdk__search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-3);
+}
+
+.cmdk__search input {
+  flex: 1;
+  min-width: 0;
+  height: 56px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.cmdk__search input::placeholder {
+  color: var(--text-3);
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.cmdk__list {
+  max-height: min(52vh, 380px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+}
+
+.cmdk__group {
+  padding: 10px 10px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.cmdk__item {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.cmdk__item.is-active {
+  color: var(--text);
+}
+
+.cmdk__hl {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+:root[data-theme="light"] .cmdk__hl {
+  background: rgba(9, 9, 11, 0.05);
+}
+
+.cmdk__icon {
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+}
+
+.cmdk__item.is-active .cmdk__icon {
+  color: var(--accent);
+}
+
+.cmdk__empty {
+  padding: 24px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.cmdk__foot {
+  display: flex;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.cmdk__foot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 310;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--inverse);
+  color: var(--on-inverse);
+  font-size: 14px;
+  box-shadow: var(--shadow);
+}
+
+/* ==========================================================================
+   Footer wordmark: outlined, fills with the accent gradient on hover
+   ========================================================================== */
+
+.footer__mark {
+  display: block;
+  margin-bottom: 32px;
+  font-size: clamp(64px, 17vw, 200px);
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+  text-align: center;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border-strong);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2)) no-repeat;
+  background-size: 0% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: background-size 0.9s var(--ease);
+  user-select: none;
+}
+
+.footer__mark:hover {
+  background-size: 100% 100%;
+}
+
+/* ==========================================================================
+   Hero spotlight: soft glow that trails the cursor
+   ========================================================================== */
+
+.hero {
+  position: relative;
+}
+
+.hero__spot {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(500px circle at var(--hx, 50%) var(--hy, 30%), rgba(var(--accent-rgb), 0.1), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hero:hover .hero__spot {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Constellation canvas
+   ========================================================================== */
+
+.constellation {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* ==========================================================================
+   Preloader: dots assemble into the wordmark, then scatter into the page
+   ========================================================================== */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+/* Background lives on a pseudo-element so it can fade while the dots burst on top */
+.preloader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transition: opacity 0.8s var(--ease);
+}
+
+.preloader.is-leaving {
+  pointer-events: none;
+}
+
+.preloader.is-leaving::before {
+  opacity: 0;
+}
+
+.preloader__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.preloader__foot {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  transition: opacity 0.4s ease;
+}
+
+.preloader__caption {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preloader__pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: ping-soft 1.2s ease-in-out infinite;
+}
+
+@keyframes ping-soft {
+  50% { opacity: 0.25; transform: scale(0.7); }
+}
+
+.preloader__count {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader__skip {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  opacity: 0;
+  animation: fade-in 0.6s ease 1.2s forwards;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes fade-in {
+  to { opacity: 0.8; }
+}
+
+.preloader__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: transform 0.2s linear, opacity 0.4s ease;
+}
+
+.preloader.is-leaving .preloader__foot,
+.preloader.is-leaving .preloader__skip,
+.preloader.is-leaving .preloader__bar {
+  opacity: 0;
+  animation: none;
+}
