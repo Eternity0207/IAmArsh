@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  FiSearch, FiHome, FiUser, FiBriefcase, FiMail, FiSun, FiMoon, FiCopy,
+  FiSearch, FiHash, FiSun, FiMoon, FiCopy,
   FiFileText, FiGithub, FiLinkedin, FiCode, FiBox,
 } from "react-icons/fi";
 import useTheme from "../hooks/useTheme";
-import { contactConfig, introdata, projects, socialprofils } from "../content_option";
+import { sections, contactConfig, introdata, projects, socialprofils } from "../content_option";
+import { useSmoothScroll } from "../layout/SmoothScroll";
 
 export const OPEN_PALETTE_EVENT = "open-command-palette";
 export const openPalette = () => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT));
@@ -23,15 +23,18 @@ export default function CommandPalette() {
   const inputRef = useRef(null);
   const listRef = useRef(null);
   const lastFocus = useRef(null);
-  const navigate = useNavigate();
+  const { scrollTo, lenis } = useSmoothScroll();
   const { theme, toggle } = useTheme();
 
   const actions = useMemo(
     () => [
-      { group: "Navigate", label: "Home", icon: <FiHome />, run: () => navigate("/") },
-      { group: "Navigate", label: "About & experience", icon: <FiUser />, run: () => navigate("/about") },
-      { group: "Navigate", label: "Work & projects", icon: <FiBriefcase />, run: () => navigate("/portfolio") },
-      { group: "Navigate", label: "Contact", icon: <FiMail />, run: () => navigate("/contact") },
+      ...sections.map((c, i) => ({
+        group: "Sections",
+        label: `${String(i).padStart(2, "0")} — ${c.label}`,
+        icon: <FiHash />,
+        keywords: c.id,
+        run: () => scrollTo(c.id),
+      })),
       {
         group: "Actions",
         label: `Switch to ${theme === "dark" ? "light" : "dark"} mode`,
@@ -65,7 +68,7 @@ export default function CommandPalette() {
       { group: "Profiles", label: "LinkedIn", icon: <FiLinkedin />, run: () => open(socialprofils.linkedin) },
       { group: "Profiles", label: "LeetCode", icon: <FiCode />, run: () => open(socialprofils.leetcode) },
     ],
-    [navigate, theme, toggle]
+    [scrollTo, theme, toggle]
   );
 
   const filtered = useMemo(() => {
@@ -98,11 +101,14 @@ export default function CommandPalette() {
       setQuery("");
       setIndex(0);
       document.body.style.overflow = "hidden";
+      if (lenis.current) lenis.current.stop();
       requestAnimationFrame(() => inputRef.current && inputRef.current.focus());
     } else {
       document.body.style.overflow = "";
+      if (lenis.current) lenis.current.start();
       if (lastFocus.current && lastFocus.current.focus) lastFocus.current.focus();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => setIndex(0), [query]);
@@ -188,7 +194,7 @@ export default function CommandPalette() {
                 <kbd>esc</kbd>
               </div>
 
-              <ul className="cmdk__list" id="cmdk-list" role="listbox" ref={listRef}>
+              <ul className="cmdk__list" id="cmdk-list" role="listbox" ref={listRef} data-lenis-prevent>
                 {filtered.length === 0 && <li className="cmdk__empty">No results for “{query}”. Try “projects” or “theme”.</li>}
                 {filtered.map((a, i) => {
                   const header = a.group !== lastGroup ? a.group : null;

@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 const STORAGE_KEY = "theme";
-const META_COLORS = { dark: "#09090b", light: "#fafaf9" };
+const META_COLORS = { dark: "#131211", light: "#f4f1ea" };
 
 const readStored = () => {
   try {

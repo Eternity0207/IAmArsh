@@ -1,49 +1,6 @@
 /* ==========================================================================
-   Nav: command-menu trigger + logo
-   ========================================================================== */
-
-.nav__cmdk {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  height: 30px;
-  padding: 0 9px;
-  margin-right: 4px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-3);
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.nav__cmdk:hover {
-  color: var(--text);
-  border-color: var(--border-strong);
-  background: var(--surface-hover);
-}
-
-.nav__logo {
-  display: inline-block;
-  transition: transform 0.3s var(--ease);
-}
-
-.nav__logo:hover {
-  transform: rotate(-4deg) scale(1.06);
-}
-
-/* ==========================================================================
    Motion helpers
    ========================================================================== */
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
 
 .split-word {
   display: inline-block;
@@ -72,27 +29,6 @@
 
 .tilt > .card {
   height: 100%;
-}
-
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  z-index: 200;
-  transform-origin: 0 50%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-}
-
-.scroll-line {
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  transform-origin: top;
-  background: linear-gradient(var(--accent), var(--accent-2));
 }
 
 /* ==========================================================================
@@ -423,54 +359,6 @@ kbd {
 }
 
 /* ==========================================================================
-   Footer wordmark: outlined, fills with the accent gradient on hover
-   ========================================================================== */
-
-.footer__mark {
-  display: block;
-  margin-bottom: 32px;
-  font-size: clamp(64px, 17vw, 200px);
-  font-weight: 700;
-  letter-spacing: -0.07em;
-  line-height: 0.9;
-  text-align: center;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--border-strong);
-  background: linear-gradient(90deg, var(--accent), var(--accent-2)) no-repeat;
-  background-size: 0% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  transition: background-size 0.9s var(--ease);
-  user-select: none;
-}
-
-.footer__mark:hover {
-  background-size: 100% 100%;
-}
-
-/* ==========================================================================
-   Hero spotlight: soft glow that trails the cursor
-   ========================================================================== */
-
-.hero {
-  position: relative;
-}
-
-.hero__spot {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(500px circle at var(--hx, 50%) var(--hy, 30%), rgba(var(--accent-rgb), 0.1), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.hero:hover .hero__spot {
-  opacity: 1;
-}
-
-/* ==========================================================================
    Constellation canvas
    ========================================================================== */
 
@@ -481,115 +369,130 @@ kbd {
 }
 
 /* ==========================================================================
-   Preloader: dots assemble into the wordmark, then scatter into the page
+   Preloader: decoding name, odometer counter, column wipe
    ========================================================================== */
 
-.preloader {
+.pl {
   position: fixed;
   inset: 0;
   z-index: 1000;
   cursor: pointer;
 }
 
-/* Background lives on a pseudo-element so it can fade while the dots burst on top */
-.preloader::before {
-  content: "";
+.pl__cols {
   position: absolute;
   inset: 0;
-  background: var(--bg);
-  transition: opacity 0.8s var(--ease);
+  display: flex;
 }
 
-.preloader.is-leaving {
-  pointer-events: none;
+.pl__col {
+  flex: 1;
+  height: 100%;
+  margin-right: -1px; /* avoid hairline gaps between columns */
+  background: var(--bg-sunk);
 }
 
-.preloader.is-leaving::before {
-  opacity: 0;
-}
-
-.preloader__canvas {
+.pl__content {
   position: absolute;
   inset: 0;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px var(--gutter);
 }
 
-.preloader__foot {
-  position: absolute;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: 28px;
+.pl__top,
+.pl__bottom {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-3);
-  transition: opacity 0.4s ease;
 }
 
-.preloader__caption {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.pl__center {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.preloader__pulse {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: ping-soft 1.2s ease-in-out infinite;
-}
-
-@keyframes ping-soft {
-  50% { opacity: 0.25; transform: scale(0.7); }
-}
-
-.preloader__count {
-  font-size: clamp(32px, 6vw, 56px);
-  font-weight: 500;
+.pl__name {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 9vw, 140px);
+  font-weight: 600;
   letter-spacing: -0.04em;
-  line-height: 1;
+  line-height: 0.95;
+  white-space: pre;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
-.preloader__skip {
-  position: absolute;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.pl__role {
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--text-2);
+}
+
+.pl__step {
+  position: relative;
+  display: grid;
+  height: 1.4em;
+  overflow: hidden;
+}
+
+.pl__step > span {
+  grid-area: 1 / 1;
+}
+
+.pl__count {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  color: var(--text);
+}
+
+.pl__pct {
+  font-size: 14px;
+  margin-top: 6px;
   color: var(--text-3);
-  opacity: 0;
-  animation: fade-in 0.6s ease 1.2s forwards;
-  transition: opacity 0.3s ease;
 }
 
-@keyframes fade-in {
-  to { opacity: 0.8; }
+.odo {
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
-.preloader__bar {
+.odo__wheel {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.odo__strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.odo__strip > span {
+  height: 1em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pl__bar {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: 2px;
+  background: var(--accent);
   transform-origin: 0 50%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transition: transform 0.2s linear, opacity 0.4s ease;
-}
-
-.preloader.is-leaving .preloader__foot,
-.preloader.is-leaving .preloader__skip,
-.preloader.is-leaving .preloader__bar {
-  opacity: 0;
-  animation: none;
+  transition: transform 0.2s linear;
 }
